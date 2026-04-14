@@ -1,0 +1,5 @@
+# depslib dependency file v1.0
+1776124136 source:c:\users\17898981\projetos\teste sld\main.c
+	<SDL3/SDL.h>
+	<stdbool.h>
+
