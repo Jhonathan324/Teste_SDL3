@@ -18,16 +18,18 @@ typedef struct Player{
     int coracoes;
     float velocidade;
     SDL_FRect retangulo;
+    SDL_Rect retangulo_int;
 } Player;
 
 typedef struct Botao{
     int estado;
     char texto[30];
     SDL_FRect retangulo;
+    SDL_Rect retangulo_int;
     int cor[3];
     int cor2[3];
 } Botao;
 
-
+void atribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
 
 #endif // GERAIS_H_INCLUDED

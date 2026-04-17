@@ -18,7 +18,7 @@ int main() {
     int cena = CENA_MENU;
 
     int cor_fundo_menu[3] = {30,200,30};
-    Botao botao_iniciar = {0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, {70,70,70}, {30,30,30}};
+    Botao botao_iniciar = {0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30}};
     float mouse_x, mouse_y;
     bool mouse_d;
 
@@ -62,8 +62,8 @@ int main() {
 
             SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
             SDL_RenderClear(renderer);
-
-            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo) && mouse_d){
+            atribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
+            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
                 SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
                 botao_iniciar.estado = 5;
             }
@@ -142,8 +142,8 @@ int main() {
 
             SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
             SDL_RenderClear(renderer);
-
-            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo) && mouse_d){
+            atribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
+            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
                 SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
                 botao_iniciar.estado = 5;
             }
