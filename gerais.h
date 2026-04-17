@@ -16,15 +16,16 @@ enum ESTADO_JOGO{
 typedef struct Player{
     int vida;
     int coracoes;
-    int velocidade;
-    SDL_Rect retangulo;
+    float velocidade;
+    SDL_FRect retangulo;
 } Player;
 
 typedef struct Botao{
     int estado;
     char texto[30];
+    SDL_FRect retangulo;
     int cor[3];
-    SDL_Rect retangulo;
+    int cor2[3];
 } Botao;
 
 

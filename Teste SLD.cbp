@@ -34,6 +34,7 @@
 		<Linker>
 			<Add library="SDL3" />
 		</Linker>
+		<Unit filename="gerais.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
