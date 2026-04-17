@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
-#include <stdbool.h>
+#include <SDL3/SDL_ttf.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "gerais.h"
 
 void atribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo){

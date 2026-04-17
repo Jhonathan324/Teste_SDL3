@@ -1,6 +1,7 @@
 #include <SDL3/SDL.h>
-#include <stdbool.h>
+#include <SDL3/SDL_ttf.h>
 #include <stdio.h>
+#include <stdbool.h>
 #include "gerais.h"
 
 int main() {
@@ -63,6 +64,7 @@ int main() {
             SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
             SDL_RenderClear(renderer);
             atribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
+
             if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
                 SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
                 botao_iniciar.estado = 5;

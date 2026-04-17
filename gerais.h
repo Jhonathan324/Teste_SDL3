@@ -1,6 +1,7 @@
 #ifndef GERAIS_H_INCLUDED
 #define GERAIS_H_INCLUDED
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_ttf.h>
 
 enum ESTADO_JOGO{
     CENA_MENU,
