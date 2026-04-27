@@ -1,24 +1,22 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_ttf.h>
+#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include "gerais.h"
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
-
-    SDL_Window *window = SDL_CreateWindow("Teste", 800, 600, 0);
+    SDL_Window *window = SDL_CreateWindow("Teste", 640, 360, 0); // (640,360) resolução base. não pode ser menor;
     SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
-
-
     SDL_Event evento;
 
     bool rodando = true;
 
-
     int cena = CENA_MENU;
 
     int cor_fundo_menu[3] = {30,200,30};
+    Moldura moldura = InitMoldura(renderer,0,0,600,300,50,"imagens/moldura de madeira.png");
     Botao botao_iniciar = {0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30}};
     float mouse_x, mouse_y;
     bool mouse_d;
@@ -59,12 +57,14 @@ int main() {
             SDL_Point ponto_mouse = {mouse_x, mouse_y};
 
 
-
-
+            // modulo de desenho
             SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
             SDL_RenderClear(renderer);
-            atribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
+            // fim da limpeza de cena
 
+            DesenharMoldura(renderer, moldura);
+
+            AtribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
             if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
                 SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
                 botao_iniciar.estado = 5;
@@ -144,7 +144,7 @@ int main() {
 
             SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
             SDL_RenderClear(renderer);
-            atribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
+            AtribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
             if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
                 SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
                 botao_iniciar.estado = 5;

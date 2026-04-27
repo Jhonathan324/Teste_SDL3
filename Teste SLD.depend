@@ -5,10 +5,12 @@
 
 1776124136 ated upstream
 
-1776431941 source:c:\users\17898981\projetos\teste_sdl3\main.c
+1777320258 source:c:\users\17898981\projetos\teste_sdl3\main.c
 	<SDL3/SDL.h>
-	<stdbool.h>
+	<SDL3/SDL_ttf.h>
+	<SDL3_image/SDL_image.h>
 	<stdio.h>
+	<stdbool.h>
 	"gerais.h"
 
 1776386976 shed changes
@@ -17,12 +19,14 @@
 	<stdio.h>
 	"gerais.h"
 
-1776431815 c:\users\17898981\projetos\teste_sdl3\gerais.h
+1777319484 c:\users\17898981\projetos\teste_sdl3\gerais.h
 	<SDL3/SDL.h>
+	<SDL3/SDL_ttf.h>
 
-1776431658 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
+1777314220 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
 	<SDL3/SDL.h>
-	<stdbool.h>
+	<SDL3/SDL_ttf.h>
 	<stdio.h>
+	<stdbool.h>
 	"gerais.h"
 

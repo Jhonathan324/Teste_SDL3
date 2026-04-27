@@ -31,6 +31,20 @@ typedef struct Botao{
     int cor2[3];
 } Botao;
 
-void atribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
+
+typedef struct Moldura{
+    int x;
+    int y;
+    int w;
+    int h;
+    SDL_Texture *textura;
+    SDL_FRect partes[3][3];
+} Moldura;
+
+Moldura InitMoldura(SDL_Renderer *renderer, int x, int y, int w, int h, int tamanho_canto,char *file);
+
+void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
+
+void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura);
 
 #endif // GERAIS_H_INCLUDED
