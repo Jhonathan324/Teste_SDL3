@@ -5,9 +5,20 @@
 #include <stdbool.h>
 #include "gerais.h"
 
-int main() {
+
+int main(void) {
+    
     SDL_Init(SDL_INIT_VIDEO);
-    VariveisGerais geral = {SDL_CreateWindow("Teste", 640, 360, 0)};// (640,360) resolução base. não pode ser menor;
+    TTF_Init();
+    int escala = 2;
+    float tamanho_tela[2];
+    float tamanho_menu[2];
+    float tamanho_botao_menu[2];
+    float tamanho_jogador[2];
+    float tamanho_inimigo1[2];
+    float tamanho_inimigo2[2];
+    GetTamanhos(&escala,&tamanho_tela,&tamanho_menu,&tamanho_botao_menu,&tamanho_jogador,&tamanho_inimigo1,&tamanho_inimigo2);
+    VariveisGerais geral = {SDL_CreateWindow("Teste", tamanho_tela[0], tamanho_tela[1], 0)};// (640,360) resolução base. não pode ser menor;
     geral.renderizador = SDL_CreateRenderer(geral.janela,NULL);
     geral.cena = CENA_MENU;
     geral.rodando = true;
@@ -18,17 +29,10 @@ int main() {
     };
 
     VariveisMenu menu={{30,200,30}}; // cor de fundo
-    menu.moldura = InitMoldura(geral.renderizador,0,0,600,300,50,"imagens/moldura de madeira.png");
-    menu.botao_iniciar = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
-    menu.botao_conf    = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
-    menu.botao_sair    = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
+    InitMenu(&geral, &menu);
 
-    VariveisPause pause={
-        {30,200,30},
-        (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30}},
-        InitMoldura(geral.renderizador,0,0,600,300,50,"imagens/moldura de madeira.png")
-    };
-
+    VariveisPause pause={{30,200,30}};// cor de fundo
+    InitPause(&geral, &pause);
 
     VariveisJogo jogo = {
         {30,30,200},   // cor de fundo
@@ -47,23 +51,34 @@ int main() {
         // Cenas
 
             case(CENA_MENU):
-                CenaMenu(&geral, &menu);
+                CenaMenuLoop(&geral, &menu);
                 CenaMenuDesenhar(&geral, &menu);
                 break;
 
 
             case(CENA_JOGO):
-                CenaJogo(&geral, &jogo);
+                CenaJogoLoop(&geral, &jogo);
                 CenaJogoDesenhar(&geral, &jogo);
                 break;
 
 
             case(CENA_PAUSE):
-                CenaPause(&geral, &pause);
+                CenaPauseLoop(&geral, &pause);
                 CenaPauseDesenhar(&geral, &pause);
                 break;
-            }
+            
 
+            case(CENA_SAIR):
+                geral.rodando = false;
+                break;
+            
+
+            default:
+                geral.cena = CENA_MENU;
+                break;
+                
+
+        }
 
         // Limpar a Tela
         SDL_RenderPresent(geral.renderizador);

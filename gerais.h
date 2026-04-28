@@ -1,7 +1,8 @@
 #ifndef GERAIS_H_INCLUDED
 #define GERAIS_H_INCLUDED
 #include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
+#define COR1 (20,20,20);
+#define  EscalaMoldura 16
 
 enum ESTADO_JOGO{
     CENA_MENU,
@@ -13,31 +14,28 @@ enum ESTADO_JOGO{
     CENA_MENU_RESOLUCAO
 };
 
-
 typedef struct Player{
     int vida;
     int coracoes;
     float velocidade;
     SDL_FRect retangulo;
-    SDL_Rect retangulo_int;
 } Player;
 
 typedef struct Botao{
     int timer;
     char texto[30];
     SDL_FRect retangulo;
-    SDL_Rect retangulo_int;
     int cor[3];
     int cor2[3];
+    int indice;
     bool sobre;
+    SDL_Texture *textura;
+    SDL_Texture *imagem;
 } Botao;
 
 
 typedef struct Moldura{
-    int x;
-    int y;
-    int w;
-    int h;
+    SDL_FRect retangulo;
     SDL_Texture *textura;
     SDL_FRect partes[3][3];
 } Moldura;
@@ -66,36 +64,39 @@ typedef struct VariveisMenu{
 
 typedef struct VariveisPause{
     int cor_fundo[3];
-    Botao botao_iniciar;
     Moldura moldura;
-
+    Botao botao_iniciar;
+    Botao botao_conf;
+    Botao botao_sair;
 } VariveisPause;
 
 typedef struct VariveisJogo{
     int cor_fundo[3];
     int velocidade_jogador_x;
     int velocidade_jogador_y;
-
 } VariveisJogo;
 
-Moldura InitMoldura(SDL_Renderer *renderer, int x, int y, int w, int h, int tamanho_canto,char *file);
-
-void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
-
+Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file);
+void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]);
 void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura);
+void DesenharBotao(SDL_Renderer *renderer, Botao botao);
+void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
+void CentralizarRectInRect(SDL_FRect *rect_pai, SDL_FRect *rect_filho);
+void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y);
+
 
 void ModuloEvento(VariveisGerais *geral);
 
-void CenaMenu(VariveisGerais *geral, VariveisMenu *menu);
-
+void InitMenu(VariveisGerais *geral, VariveisMenu *menu);
+void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu);
 void CenaMenuDesenhar(VariveisGerais *geral, VariveisMenu *menu);
 
-void CenaPause(VariveisGerais *geral, VariveisPause *pause);
-
+void InitPause(VariveisGerais *geral, VariveisPause *pause);
+void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause);
 void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause);
 
-void CenaJogo(VariveisGerais *geral, VariveisJogo *jogo);
-
+void InitJogo(VariveisGerais *geral, VariveisJogo *jogo);
+void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo);
 void CenaJogoDesenhar(VariveisGerais *geral, VariveisJogo *jogo);
 
 #endif // GERAIS_H_INCLUDED

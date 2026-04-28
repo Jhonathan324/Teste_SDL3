@@ -33,12 +33,22 @@
 		</Compiler>
 		<Linker>
 			<Add library="SDL3" />
+			<Add library="SDL3_image" />
 		</Linker>
 		<Unit filename="gerais.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="gerais.h" />
+		<Unit filename="jogo.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="menu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="pause.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Extensions>

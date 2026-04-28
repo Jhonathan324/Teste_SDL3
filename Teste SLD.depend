@@ -5,7 +5,7 @@
 
 1776124136 ated upstream
 
-1777377339 source:c:\users\17898981\projetos\teste_sdl3\main.c
+1777403484 source:c:\users\17898981\projetos\teste_sdl3\main.c
 	<SDL3/SDL.h>
 	<SDL3/SDL_ttf.h>
 	<SDL3_image/SDL_image.h>
@@ -19,11 +19,34 @@
 	<stdio.h>
 	"gerais.h"
 
-1777377339 c:\users\17898981\projetos\teste_sdl3\gerais.h
+1777404304 c:\users\17898981\projetos\teste_sdl3\gerais.h
+	<SDL3/SDL.h>
+
+1777405056 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
 	<SDL3/SDL.h>
 	<SDL3/SDL_ttf.h>
+	<SDL3_image/SDL_image.h>
+	<stdio.h>
+	<stdbool.h>
+	"gerais.h"
 
-1777377339 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
+1777400217 source:c:\users\17898981\projetos\teste_sdl3\jogo.c
+	<SDL3/SDL.h>
+	<SDL3/SDL_ttf.h>
+	<SDL3_image/SDL_image.h>
+	<stdio.h>
+	<stdbool.h>
+	"gerais.h"
+
+1777400224 source:c:\users\17898981\projetos\teste_sdl3\pause.c
+	<SDL3/SDL.h>
+	<SDL3/SDL_ttf.h>
+	<SDL3_image/SDL_image.h>
+	<stdio.h>
+	<stdbool.h>
+	"gerais.h"
+
+1777404643 source:c:\users\17898981\projetos\teste_sdl3\menu.c
 	<SDL3/SDL.h>
 	<SDL3/SDL_ttf.h>
 	<SDL3_image/SDL_image.h>

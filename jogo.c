@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include "gerais.h"
 
-void CenaJogo(VariveisGerais *geral, VariveisJogo *jogo){
+void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo){
     const bool *teclado = SDL_GetKeyboardState(NULL);
 
     if (teclado[SDL_SCANCODE_ESCAPE]) geral->cena = CENA_PAUSE;
