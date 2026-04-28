@@ -7,163 +7,72 @@
 
 int main() {
     SDL_Init(SDL_INIT_VIDEO);
-    SDL_Window *window = SDL_CreateWindow("Teste", 640, 360, 0); // (640,360) resolução base. não pode ser menor;
-    SDL_Renderer *renderer = SDL_CreateRenderer(window, NULL);
-    SDL_Event evento;
+    VariveisGerais geral = {SDL_CreateWindow("Teste", 640, 360, 0)};// (640,360) resolução base. não pode ser menor;
+    geral.renderizador = SDL_CreateRenderer(geral.janela,NULL);
+    geral.cena = CENA_MENU;
+    geral.rodando = true;
+    geral.jogador = (Player)
+    {100, 3, 2, 
+    (SDL_FRect)
+    {100,100,50,50}
+    };
 
-    bool rodando = true;
+    VariveisMenu menu={{30,200,30}}; // cor de fundo
+    menu.moldura = InitMoldura(geral.renderizador,0,0,600,300,50,"imagens/moldura de madeira.png");
+    menu.botao_iniciar = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
+    menu.botao_conf    = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
+    menu.botao_sair    = (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30},0};
 
-    int cena = CENA_MENU;
-
-    int cor_fundo_menu[3] = {30,200,30};
-    Moldura moldura = InitMoldura(renderer,0,0,600,300,50,"imagens/moldura de madeira.png");
-    Botao botao_iniciar = {0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30}};
-    float mouse_x, mouse_y;
-    bool mouse_d;
-
-
-    int cor_fundo_jogo[3] = {30,30,200};
-    Player jogador = {100, 3, 1, (SDL_FRect){100,100,50,50}};
-    float velocidade_jogador_x = 0;
-    float velocidade_jogador_y = 0;
+    VariveisPause pause={
+        {30,200,30},
+        (Botao){0, "Iniciar Jogo", (SDL_FRect){300,300,200,60}, (SDL_Rect){300,300,200,60}, {70,70,70}, {30,30,30}},
+        InitMoldura(geral.renderizador,0,0,600,300,50,"imagens/moldura de madeira.png")
+    };
 
 
-    while (rodando) {
+    VariveisJogo jogo = {
+        {30,30,200},   // cor de fundo
+        0,             // velocidade jogodaor em x
+        0              // velocidade jogodaor em y
+    };
+    
 
-        while (SDL_PollEvent(&evento)) {
-            if (evento.type == SDL_EVENT_QUIT) {
-                rodando = false;
-            }
-            if(evento.type == SDL_EVENT_MOUSE_BUTTON_DOWN) mouse_d = true;
-            else mouse_d = false;
+    while (geral.rodando) {
+
+        while (SDL_PollEvent(&geral.evento)){
+            ModuloEvento(&geral);
         }
 
+        switch(geral.cena){
+        // Cenas
+
+            case(CENA_MENU):
+                CenaMenu(&geral, &menu);
+                CenaMenuDesenhar(&geral, &menu);
+                break;
 
 
+            case(CENA_JOGO):
+                CenaJogo(&geral, &jogo);
+                CenaJogoDesenhar(&geral, &jogo);
+                break;
 
-        switch(cena){
-        case(CENA_MENU):
-            if(botao_iniciar.estado){
-                if (botao_iniciar.estado > 1 ) botao_iniciar.estado--;
-                else{
-                    cena = CENA_JOGO;
-                    botao_iniciar.estado = 0;
-                }
+
+            case(CENA_PAUSE):
+                CenaPause(&geral, &pause);
+                CenaPauseDesenhar(&geral, &pause);
+                break;
             }
 
 
-
-            SDL_GetMouseState(&mouse_x, &mouse_y);
-            SDL_Point ponto_mouse = {mouse_x, mouse_y};
-
-
-            // modulo de desenho
-            SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
-            SDL_RenderClear(renderer);
-            // fim da limpeza de cena
-
-            DesenharMoldura(renderer, moldura);
-
-            AtribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
-            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
-                SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
-                botao_iniciar.estado = 5;
-            }
-            else{
-                SDL_SetRenderDrawColor(renderer, botao_iniciar.cor2[0], botao_iniciar.cor2[1], botao_iniciar.cor2[2], 255);
-            }
-            SDL_RenderFillRect(renderer,&botao_iniciar.retangulo);
-
-
-
-            break;
-
-
-
-
-
-
-        case(CENA_JOGO):
-            const bool *teclado = SDL_GetKeyboardState(NULL);
-
-            if (teclado[SDL_SCANCODE_ESCAPE]) cena = CENA_PAUSE;
-
-            // Logica do Player
-
-            if (teclado[SDL_SCANCODE_A]) velocidade_jogador_x -= jogador.velocidade;
-            if (teclado[SDL_SCANCODE_D]) velocidade_jogador_x += jogador.velocidade;
-            if (teclado[SDL_SCANCODE_W]) velocidade_jogador_y -= jogador.velocidade;
-            if (teclado[SDL_SCANCODE_S]) velocidade_jogador_y += jogador.velocidade;
-
-            if (velocidade_jogador_x < -10) velocidade_jogador_x = -10;
-            if (velocidade_jogador_x >  10) velocidade_jogador_x =  10;
-            if (velocidade_jogador_y < -10) velocidade_jogador_y = -10;
-            if (velocidade_jogador_y >  10) velocidade_jogador_y =  10;
-
-            if (velocidade_jogador_x < 0 && velocidade_jogador_x > - 0.5) velocidade_jogador_x = 0;
-            if (velocidade_jogador_x > 0 && velocidade_jogador_x <   0.5) velocidade_jogador_x = 0;
-            if (velocidade_jogador_y < 0 && velocidade_jogador_y > - 0.5) velocidade_jogador_y = 0;
-            if (velocidade_jogador_y > 0 && velocidade_jogador_y <   0.5) velocidade_jogador_y = 0;
-
-            jogador.retangulo.x += velocidade_jogador_x;
-            jogador.retangulo.y += velocidade_jogador_y;
-
-            if (velocidade_jogador_x < 0) velocidade_jogador_x += 0.3;
-            if (velocidade_jogador_x > 0) velocidade_jogador_x -= 0.3;
-            if (velocidade_jogador_y < 0) velocidade_jogador_y += 0.3;
-            if (velocidade_jogador_y > 0) velocidade_jogador_y -= 0.3;
-
-
-
-
-            SDL_SetRenderDrawColor(renderer, cor_fundo_jogo[0], cor_fundo_jogo[1], cor_fundo_jogo[2], 255);
-            SDL_RenderClear(renderer);
-
-            SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-            SDL_RenderFillRect(renderer, &jogador.retangulo);
-            break;
-
-
-        case(CENA_PAUSE):
-            if(botao_iniciar.estado){
-                if (botao_iniciar.estado > 1 ) botao_iniciar.estado--;
-                else{
-                    cena = CENA_JOGO;
-                    botao_iniciar.estado = 0;
-                }
-            }
-
-
-
-            SDL_GetMouseState(&mouse_x, &mouse_y);
-            ponto_mouse.x = mouse_x;
-            ponto_mouse.y = mouse_y;
-
-
-
-
-            SDL_SetRenderDrawColor(renderer, cor_fundo_menu[0], cor_fundo_menu[1], cor_fundo_menu[2], 255);
-            SDL_RenderClear(renderer);
-            AtribuirFRectInRectA(&botao_iniciar.retangulo,&botao_iniciar.retangulo_int);
-            if(SDL_PointInRect(&ponto_mouse, &botao_iniciar.retangulo_int) && mouse_d){
-                SDL_SetRenderDrawColor(renderer, botao_iniciar.cor[0], botao_iniciar.cor[1], botao_iniciar.cor[2], 255);
-                botao_iniciar.estado = 5;
-            }
-            else{
-                SDL_SetRenderDrawColor(renderer, botao_iniciar.cor2[0], botao_iniciar.cor2[1], botao_iniciar.cor2[2], 255);
-            }
-            SDL_RenderFillRect(renderer,&botao_iniciar.retangulo);
-
-            break;
-        }
         // Limpar a Tela
-
-        SDL_RenderPresent(renderer);
+        SDL_RenderPresent(geral.renderizador);
         SDL_Delay(16); // ~60 FPS
     }
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
+    // Saindo do jogo
+    SDL_DestroyRenderer(geral.renderizador);
+    SDL_DestroyWindow(geral.janela);
     SDL_Quit();
 
     return 0;
