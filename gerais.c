@@ -5,203 +5,258 @@
 #include <stdbool.h>
 #include "gerais.h"
 
-
-void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_bloco)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]){
-    switch (*escala){
+void GetTamanhos(TAMANHOS *tamanhos)
+{
+    switch (tamanhos->escala)
+    {
     case 0:
-        (*tamanho_tela)[0] = 640;
-        (*tamanho_tela)[1]= 360;
+        tamanhos->tamanho_tela[0] = 640;
+        tamanhos->tamanho_tela[1] = 360;
         break;
 
     case 1:
-        (*tamanho_tela)[0] = 854;
-        (*tamanho_tela)[1]= 480;
+        tamanhos->tamanho_tela[0] = 854;
+        tamanhos->tamanho_tela[1] = 480;
         break;
 
     case 2:
-        (*tamanho_tela)[0] = 1280;
-        (*tamanho_tela)[1]= 720;
+        tamanhos->tamanho_tela[0] = 1280;
+        tamanhos->tamanho_tela[1] = 720;
         break;
 
     case 3:
-        (*tamanho_tela)[0] = 1366;
-        (*tamanho_tela)[1]= 768;
+        tamanhos->tamanho_tela[0] = 1366;
+        tamanhos->tamanho_tela[1] = 768;
         break;
 
     case 4:
-        (*tamanho_tela)[0] = 1600;
-        (*tamanho_tela)[1]= 900;
+        tamanhos->tamanho_tela[0] = 1600;
+        tamanhos->tamanho_tela[1] = 900;
         break;
 
     case 5:
-        (*tamanho_tela)[0] = 1920;
-        (*tamanho_tela)[1]= 1080;
+        tamanhos->tamanho_tela[0] = 1920;
+        tamanhos->tamanho_tela[1] = 1080;
         break;
 
     case 6:
-        (*tamanho_tela)[0] = 2560;
-        (*tamanho_tela)[1]= 1440;
+        tamanhos->tamanho_tela[0] = 2560;
+        tamanhos->tamanho_tela[1] = 1440;
         break;
 
     default:
-        *escala = 0;
-        (*tamanho_tela)[0] = 640;
-        (*tamanho_tela)[1]= 360;
+        tamanhos->escala = 0;
+        tamanhos->tamanho_tela[0] = 640;
+        tamanhos->tamanho_tela[1] = 360;
         break;
     }
-    (*tamanho_menu)[0] =       (*tamanho_tela)[0]*((float)6/10);
-    (*tamanho_menu)[1] =       (*tamanho_tela)[1]*((float)8/10);
-    
-    (*tamanho_botao_menu)[0] = (*tamanho_menu)[0]*((float)7/10);
-    (*tamanho_botao_menu)[1] = (*tamanho_menu)[1]*((float)1/10);
+    tamanhos->tamanho_menu[0] = tamanhos->tamanho_tela[0] * ((float)6 / 10);
+    tamanhos->tamanho_menu[1] = tamanhos->tamanho_tela[1] * ((float)8 / 10);
 
-    (*tamanho_jogador)[0] =    (*tamanho_tela)[0]*((float)1/10);
-    (*tamanho_jogador)[1] =    (*tamanho_tela)[1]*((float)1/10);
+    tamanhos->tamanho_botao_menu[0] = tamanhos->tamanho_menu[0] * ((float)7 / 10);
+    tamanhos->tamanho_botao_menu[1] = tamanhos->tamanho_menu[1] * ((float)1 / 10);
 
-    (*tamanho_bloco)[0] =      (*tamanho_tela)[0]*((float)1/20);
-    (*tamanho_bloco)[1] =      (*tamanho_tela)[1]*((float)1/20);
+    tamanhos->tamanho_jogador[0] = tamanhos->tamanho_tela[0] * ((float)1 / 10);
+    tamanhos->tamanho_jogador[1] = tamanhos->tamanho_tela[1] * ((float)1 / 10);
 
-    (*tamanho_inimigo1)[0] =   (*tamanho_tela)[0]*((float)1/10);
-    (*tamanho_inimigo1)[1] =   (*tamanho_tela)[1]*((float)1/10);
+    tamanhos->tamanho_bloco[0] = tamanhos->tamanho_tela[0] * ((float)1 / 20);
+    tamanhos->tamanho_bloco[1] = tamanhos->tamanho_tela[1] * ((float)1 / 20);
 
-    (*tamanho_inimigo2)[0] =   (*tamanho_tela)[0]*((float)1/10);
-    (*tamanho_inimigo2)[1] =   (*tamanho_tela)[1]*((float)1/10);
-     
+    tamanhos->tamanho_inimigo1[0] = tamanhos->tamanho_tela[0] * ((float)1 / 10);
+    tamanhos->tamanho_inimigo1[1] = tamanhos->tamanho_tela[1] * ((float)1 / 10);
 
-
-
-
+    tamanhos->tamanho_inimigo2[0] = tamanhos->tamanho_tela[0] * ((float)1 / 10);
+    tamanhos->tamanho_inimigo2[1] = tamanhos->tamanho_tela[1] * ((float)1 / 10);
 }
 
-void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo){
+void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo)
+{
     retangulo->x = fretangulo->x;
     retangulo->y = fretangulo->y;
     retangulo->h = fretangulo->h;
     retangulo->w = fretangulo->w;
 }
 
-Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file){
-    if(retangulo->w < tamanho_canto*2){
-        retangulo->w = tamanho_canto*2;
+Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto, char *file)
+{
+    if (retangulo->w < tamanho_canto * 2)
+    {
+        retangulo->w = tamanho_canto * 2;
     }
-    if(retangulo->h < tamanho_canto*2){
-        retangulo->h = tamanho_canto*2;
+    if (retangulo->h < tamanho_canto * 2)
+    {
+        retangulo->h = tamanho_canto * 2;
     }
     SDL_Texture *textura = IMG_LoadTexture(renderer, file);
-    SDL_SetTextureScaleMode(textura,SDL_SCALEMODE_NEAREST);
-    Moldura moldura = {*retangulo,textura};
+    SDL_SetTextureScaleMode(textura, SDL_SCALEMODE_NEAREST);
+    Moldura moldura = {*retangulo, textura};
     int x = retangulo->x;
     int y = retangulo->y;
     int w = retangulo->w;
     int h = retangulo->h;
-    moldura.partes[0][0]= (SDL_FRect){x                 , y                , tamanho_canto     , tamanho_canto    };
-    moldura.partes[0][1]= (SDL_FRect){x+tamanho_canto   , y                , w-2*tamanho_canto , tamanho_canto    };
-    moldura.partes[0][2]= (SDL_FRect){x+w-tamanho_canto , y                , tamanho_canto     , tamanho_canto    };
-    moldura.partes[1][0]= (SDL_FRect){x                 , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
-    moldura.partes[1][1]= (SDL_FRect){x+tamanho_canto   , y+tamanho_canto  , w-2*tamanho_canto , h-2*tamanho_canto};
-    moldura.partes[1][2]= (SDL_FRect){x+w-tamanho_canto , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
-    moldura.partes[2][0]= (SDL_FRect){x                 , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
-    moldura.partes[2][1]= (SDL_FRect){x+tamanho_canto   , y+h-tamanho_canto, w-2*tamanho_canto , tamanho_canto    };
-    moldura.partes[2][2]= (SDL_FRect){x+w-tamanho_canto , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
+    moldura.partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
+    moldura.partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
+    moldura.partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
+    moldura.partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    moldura.partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
+    moldura.partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    moldura.partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+    moldura.partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
+    moldura.partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
     return moldura;
 }
-Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *imagem, char texto[], int cor[3], int cor2[3], int indice, TTF_Font *fonte, SDL_Color cor_fonte){
-    if(retangulo->w < tamanho_canto*2){
-        retangulo->w = tamanho_canto*2;
+Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte)
+{
+    // texto
+    int x, y;
+    float proporcao = 1;
+    SDL_Texture *textura_texto;
+    if (texto)
+    {
+        SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, texto, 0, cor_fonte);
+        textura_texto = SDL_CreateTextureFromSurface(renderer, surface_texto);
+        TTF_GetStringSize(fonte, texto, 0, &x, &y);
+        proporcao = (float)x / y;
+        retangulo->w = retangulo->h * proporcao;
     }
-    if(retangulo->h < tamanho_canto*2){
-        retangulo->h = tamanho_canto*2;
-    }
+    // Botão
 
-    
-    Botao botao = {0,texto,*retangulo,*cor,*cor2,indice,false};
+    Botao botao = {
+        0,          // timer
+        texto,      // texto
+        *retangulo, // retangulo
+        cor1,
+        cor2,                               // cor1 e cor2
+        indice,                             // indice
+        false,                              // sobre (verificar se o mouse esta sobre)
+        proporcao,                          // proporcao (porporção entre a largura sobre altura)
+        textura_texto,                      // textura texto
+        IMG_LoadTexture(renderer, imagem)}; // textura da imagem
 
-    //texto
-    SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, botao.texto, 0, cor_fonte);
-    botao.textura = SDL_CreateTextureFromSurface(renderer, surface_texto);
+    float tamanho_canto;
+    if (retangulo->h >= retangulo->w)
+        tamanho_canto = retangulo->w / 2;
+    else
+        tamanho_canto = retangulo->h / 2;
 
-    //imagem
-    botao.imagem = IMG_LoadTexture(renderer, imagem);
-    SDL_SetTextureScaleMode(botao.imagem,SDL_SCALEMODE_NEAREST);
-    int x = retangulo->x;
-    int y = retangulo->y;
-    int w = retangulo->w;
-    int h = retangulo->h;
-    botao.partes[0][0]= (SDL_FRect){x                 , y                , tamanho_canto     , tamanho_canto    };
-    botao.partes[0][1]= (SDL_FRect){x+tamanho_canto   , y                , w-2*tamanho_canto , tamanho_canto    };
-    botao.partes[0][2]= (SDL_FRect){x+w-tamanho_canto , y                , tamanho_canto     , tamanho_canto    };
-    botao.partes[1][0]= (SDL_FRect){x                 , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
-    botao.partes[1][1]= (SDL_FRect){x+tamanho_canto   , y+tamanho_canto  , w-2*tamanho_canto , h-2*tamanho_canto};
-    botao.partes[1][2]= (SDL_FRect){x+w-tamanho_canto , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
-    botao.partes[2][0]= (SDL_FRect){x                 , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
-    botao.partes[2][1]= (SDL_FRect){x+tamanho_canto   , y+h-tamanho_canto, w-2*tamanho_canto , tamanho_canto    };
-    botao.partes[2][2]= (SDL_FRect){x+w-tamanho_canto , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
+    // imagem
+    SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
     return botao;
 }
 
-void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura){
-    for(int i = 0; i < 3; i++)for(int j = 0; j < 3; j++)
-    SDL_RenderTextureRotated(
-        renderer,
-        moldura.textura,
-        &(SDL_FRect){EscalaMoldura*(2-j),EscalaMoldura*(2-i),EscalaMoldura,EscalaMoldura},
-        &moldura.partes[i][j],
-        180.0,
-        NULL,
-        SDL_FLIP_NONE);
+void CalcularBotaoParte(Botao *botao)
+{
+    float tamanho_canto;
+    float x = botao->retangulo.x;
+    float y = botao->retangulo.y;
+    float w = botao->retangulo.w;
+    float h = botao->retangulo.h;
+
+    if (h >= w)
+        tamanho_canto = w / 2;
+    else
+        tamanho_canto = h / 2;
+    botao->partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
+    botao->partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
+    botao->partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
+    botao->partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    botao->partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
+    botao->partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    botao->partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+    botao->partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
+    botao->partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
 }
 
-void DesenharBotao(SDL_Renderer *renderizador, Botao botao){
-    if(!botao.imagem){
-        if(!botao.sobre && botao.cor){
-            SDL_SetRenderDrawColor(renderizador, botao.cor[0], botao.cor[1], botao.cor[2], 255);
+void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura)
+{
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            SDL_RenderTexture(
+                renderer,
+                moldura.textura,
+                &(SDL_FRect){EscalaMoldura * j, EscalaMoldura * i, EscalaMoldura, EscalaMoldura},
+                &moldura.partes[i][j]);
+}
+
+void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
+{
+    if (!botao.imagem)
+    {
+        if (!botao.sobre)
+        {
+            SDL_SetRenderDrawColor(renderizador, botao.cor1.r, botao.cor1.g, botao.cor1.b, botao.cor1.a);
         }
-        else if(botao.cor2){
-            SDL_SetRenderDrawColor(renderizador, botao.cor2[0], botao.cor2[1], botao.cor2[2], 255);
+        else
+        {
+            SDL_SetRenderDrawColor(renderizador, botao.cor2.r, botao.cor2.g, botao.cor2.b, botao.cor2.a);
         }
-        SDL_RenderFillRect(renderizador,&botao.retangulo);
+        SDL_RenderFillRect(renderizador, &botao.retangulo);
     }
-    else SDL_RenderTexture(renderizador, botao.imagem,NULL,&botao.retangulo);
-    if(botao.textura){
+    else
+    {
+        if (botao.partes)
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    SDL_RenderTexture(
+                        renderizador,
+                        botao.imagem,
+                        &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
+                        &botao.partes[i][j]);
+        else
+            SDL_RenderTexture(
+                renderizador,
+                botao.imagem,
+                NULL,
+                &botao.retangulo);
+    }
+    if (botao.textura)
+    {
         SDL_FRect retangulo_texto = botao.retangulo;
         retangulo_texto.h *= 0.8;
         retangulo_texto.w = retangulo_texto.h * botao.proporcao;
-        retangulo_texto.x = (botao.retangulo.x + (botao.retangulo.w - retangulo_texto.w)/2);
-        retangulo_texto.y = (botao.retangulo.y + (botao.retangulo.h - retangulo_texto.h)/2);
-        SDL_RenderTexture(renderizador,botao.textura, NULL, &retangulo_texto);
-    } 
-
+        retangulo_texto.x = (botao.retangulo.x + (botao.retangulo.w - retangulo_texto.w) / 2);
+        retangulo_texto.y = (botao.retangulo.y + (botao.retangulo.h - retangulo_texto.h) / 2);
+        SDL_RenderTexture(renderizador, botao.textura, NULL, &retangulo_texto);
+    }
 }
 
-void ModuloEvento(VariveisGerais *jogo){
-    if (jogo->evento.type == SDL_EVENT_QUIT) {
-                jogo->rodando = false;
-            }
-            if(jogo->evento.type == SDL_EVENT_MOUSE_BUTTON_DOWN) jogo->botao_mouse_direito = true;
-            else jogo->botao_mouse_direito = false;
-    
+void ModuloEvento(VariveisGerais *jogo)
+{
+    if (jogo->evento.type == SDL_EVENT_QUIT)
+    {
+        jogo->rodando = false;
+    }
+    if (jogo->evento.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
+        jogo->botao_mouse_direito = true;
+    else
+        jogo->botao_mouse_direito = false;
 }
 
-void CentralizarRectInRect(SDL_FRect *pai, SDL_FRect *filho){
-    filho->x = pai->x + (pai->w-filho->w)/2;
-    filho->y = pai->y + (pai->h-filho->h)/2;
+void CentralizarRectInRect(SDL_FRect *pai, SDL_FRect *filho)
+{
+    filho->x = pai->x + (pai->w - filho->w) / 2;
+    filho->y = pai->y + (pai->h - filho->h) / 2;
 }
 
-void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y){
+void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y)
+{
     borda_x = borda_x * pai->w;
     borda_y = borda_y * pai->h;
     float soma = 0;
-    for(int i = 0; i < n; i++) soma += filho[i]-> h;
-    float espaco_interno_remanecente = (pai->h-borda_y*2) - soma;
-    float espacamento = espaco_interno_remanecente / (n-1);
-    for(int i = 0; i < n; i++){
-        filho[i]->x = pai->x + (pai->w-filho[i]->w)/2;
-        if(i!=0){
-            filho[i]->y = filho[i-1]->y + filho[i-1]->h + espacamento;
+    for (int i = 0; i < n; i++)
+        soma += filho[i]->h;
+    float espaco_interno_remanecente = (pai->h - borda_y * 2) - soma;
+    float espacamento = espaco_interno_remanecente / (n - 1);
+    for (int i = 0; i < n; i++)
+    {
+        filho[i]->x = pai->x + (pai->w - filho[i]->w) / 2;
+        if (i != 0)
+        {
+            filho[i]->y = filho[i - 1]->y + filho[i - 1]->h + espacamento;
         }
-        else {
+        else
+        {
             filho[i]->y = pai->y + borda_y;
         }
-
     }
 }

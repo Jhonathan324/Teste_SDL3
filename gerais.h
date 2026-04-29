@@ -1,10 +1,18 @@
 #ifndef GERAIS_H_INCLUDED
 #define GERAIS_H_INCLUDED
 #include <SDL3/SDL.h>
-#define COR1 (20,20,20);
-#define  EscalaMoldura 16
+#define COR1        {20,  20,  20}
+#define CORCORFUNDO {20,  20,  20}
+#define PRETO       {0,   0,   0}
+#define BRANCO      {255, 255, 255}
+#define VERMELHO    {255, 20,  20}
+#define VERDE       {20,  255, 20}
+#define AZUL        {20,  20,  25}
+#define EscalaMoldura 16
+#define EscalaBotao 8
 
-enum ESTADO_JOGO{
+enum ESTADO_JOGO
+{
     CENA_MENU,
     CENA_JOGO,
     CENA_PAUSE,
@@ -14,19 +22,21 @@ enum ESTADO_JOGO{
     CENA_MENU_RESOLUCAO
 };
 
-typedef struct Player{
+typedef struct Player
+{
     int vida;
     int coracoes;
     float velocidade;
     SDL_FRect retangulo;
 } Player;
 
-typedef struct Botao{
+typedef struct Botao
+{
     int timer;
     char *texto;
     SDL_FRect retangulo;
-    int cor[3];
-    int cor2[3];
+    SDL_Color cor1;
+    SDL_Color cor2;
     int indice;
     bool sobre;
     float proporcao;
@@ -35,14 +45,15 @@ typedef struct Botao{
     SDL_FRect partes[3][3];
 } Botao;
 
-
-typedef struct Moldura{
+typedef struct Moldura
+{
     SDL_FRect retangulo;
     SDL_Texture *textura;
     SDL_FRect partes[3][3];
 } Moldura;
 
-typedef struct VariveisGerais{
+typedef struct VariveisGerais
+{
     SDL_Window *janela;
     SDL_Renderer *renderizador;
     SDL_Event evento;
@@ -55,30 +66,37 @@ typedef struct VariveisGerais{
     Player jogador;
 } VariveisGerais;
 
-typedef struct VariveisMenu{
+typedef struct VariveisMenu
+{
     int cor_fundo[3];
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_conf;
     Botao botao_sair;
-
+    SDL_Texture fundo;
+    SDL_Texture *imagem;
 } VariveisMenu;
 
-typedef struct VariveisPause{
+typedef struct VariveisPause
+{
     int cor_fundo[3];
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_conf;
     Botao botao_sair;
+    SDL_Texture fundo;
+    SDL_Texture *imagem;
 } VariveisPause;
 
-typedef struct VariveisJogo{
+typedef struct VariveisJogo
+{
     int cor_fundo[3];
     int velocidade_jogador_x;
     int velocidade_jogador_y;
 } VariveisJogo;
 
-typedef struct TAMANHOS{
+typedef struct TAMANHOS
+{
     int escala;
     float tamanho_tela[2];
     float tamanho_menu[2];
@@ -89,15 +107,15 @@ typedef struct TAMANHOS{
     float tamanho_bloco[2];
 } TAMANHOS;
 
-Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file);
-Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file, char *texto, int cor[3], int cor2[3], int indice, TTF_Font *fonte, SDL_Color cor_fonte);
-void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_bloco)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]);
+Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto, char *file);
+Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *file, char *texto, SDL_Color cor, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte);
+void CalcularBotaoParte(Botao *botao);
+void GetTamanhos(TAMANHOS *tamanhos);
 void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura);
 void DesenharBotao(SDL_Renderer *renderer, Botao botao);
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
 void CentralizarRectInRect(SDL_FRect *rect_pai, SDL_FRect *rect_filho);
 void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y);
-
 
 void ModuloEvento(VariveisGerais *geral);
 
@@ -105,7 +123,7 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos);
 void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu);
 void CenaMenuDesenhar(VariveisGerais *geral, VariveisMenu *menu);
 
-void InitPause(VariveisGerais *geral, VariveisPause *pause);
+void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos);
 void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause);
 void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause);
 
