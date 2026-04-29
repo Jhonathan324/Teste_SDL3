@@ -6,7 +6,7 @@
 #include "gerais.h"
 
 
-void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]){
+void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_bloco)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]){
     switch (*escala){
     case 0:
         (*tamanho_tela)[0] = 640;
@@ -49,6 +49,28 @@ void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2]
         (*tamanho_tela)[1]= 360;
         break;
     }
+    (*tamanho_menu)[0] =       (*tamanho_tela)[0]*((float)6/10);
+    (*tamanho_menu)[1] =       (*tamanho_tela)[1]*((float)8/10);
+    
+    (*tamanho_botao_menu)[0] = (*tamanho_menu)[0]*((float)7/10);
+    (*tamanho_botao_menu)[1] = (*tamanho_menu)[1]*((float)1/10);
+
+    (*tamanho_jogador)[0] =    (*tamanho_tela)[0]*((float)1/10);
+    (*tamanho_jogador)[1] =    (*tamanho_tela)[1]*((float)1/10);
+
+    (*tamanho_bloco)[0] =      (*tamanho_tela)[0]*((float)1/20);
+    (*tamanho_bloco)[1] =      (*tamanho_tela)[1]*((float)1/20);
+
+    (*tamanho_inimigo1)[0] =   (*tamanho_tela)[0]*((float)1/10);
+    (*tamanho_inimigo1)[1] =   (*tamanho_tela)[1]*((float)1/10);
+
+    (*tamanho_inimigo2)[0] =   (*tamanho_tela)[0]*((float)1/10);
+    (*tamanho_inimigo2)[1] =   (*tamanho_tela)[1]*((float)1/10);
+     
+
+
+
+
 }
 
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo){
@@ -83,6 +105,39 @@ Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_ca
     moldura.partes[2][2]= (SDL_FRect){x+w-tamanho_canto , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
     return moldura;
 }
+Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *imagem, char texto[], int cor[3], int cor2[3], int indice, TTF_Font *fonte, SDL_Color cor_fonte){
+    if(retangulo->w < tamanho_canto*2){
+        retangulo->w = tamanho_canto*2;
+    }
+    if(retangulo->h < tamanho_canto*2){
+        retangulo->h = tamanho_canto*2;
+    }
+
+    
+    Botao botao = {0,texto,*retangulo,*cor,*cor2,indice,false};
+
+    //texto
+    SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, botao.texto, 0, cor_fonte);
+    botao.textura = SDL_CreateTextureFromSurface(renderer, surface_texto);
+
+    //imagem
+    botao.imagem = IMG_LoadTexture(renderer, imagem);
+    SDL_SetTextureScaleMode(botao.imagem,SDL_SCALEMODE_NEAREST);
+    int x = retangulo->x;
+    int y = retangulo->y;
+    int w = retangulo->w;
+    int h = retangulo->h;
+    botao.partes[0][0]= (SDL_FRect){x                 , y                , tamanho_canto     , tamanho_canto    };
+    botao.partes[0][1]= (SDL_FRect){x+tamanho_canto   , y                , w-2*tamanho_canto , tamanho_canto    };
+    botao.partes[0][2]= (SDL_FRect){x+w-tamanho_canto , y                , tamanho_canto     , tamanho_canto    };
+    botao.partes[1][0]= (SDL_FRect){x                 , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
+    botao.partes[1][1]= (SDL_FRect){x+tamanho_canto   , y+tamanho_canto  , w-2*tamanho_canto , h-2*tamanho_canto};
+    botao.partes[1][2]= (SDL_FRect){x+w-tamanho_canto , y+tamanho_canto  , tamanho_canto     , h-2*tamanho_canto};
+    botao.partes[2][0]= (SDL_FRect){x                 , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
+    botao.partes[2][1]= (SDL_FRect){x+tamanho_canto   , y+h-tamanho_canto, w-2*tamanho_canto , tamanho_canto    };
+    botao.partes[2][2]= (SDL_FRect){x+w-tamanho_canto , y+h-tamanho_canto, tamanho_canto     , tamanho_canto    };
+    return botao;
+}
 
 void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura){
     for(int i = 0; i < 3; i++)for(int j = 0; j < 3; j++)
@@ -109,8 +164,8 @@ void DesenharBotao(SDL_Renderer *renderizador, Botao botao){
     else SDL_RenderTexture(renderizador, botao.imagem,NULL,&botao.retangulo);
     if(botao.textura){
         SDL_FRect retangulo_texto = botao.retangulo;
-        retangulo_texto.w *= 0.8;
         retangulo_texto.h *= 0.8;
+        retangulo_texto.w = retangulo_texto.h * botao.proporcao;
         retangulo_texto.x = (botao.retangulo.x + (botao.retangulo.w - retangulo_texto.w)/2);
         retangulo_texto.y = (botao.retangulo.y + (botao.retangulo.h - retangulo_texto.h)/2);
         SDL_RenderTexture(renderizador,botao.textura, NULL, &retangulo_texto);

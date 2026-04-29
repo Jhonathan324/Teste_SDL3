@@ -10,15 +10,9 @@ int main(void) {
     
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
-    int escala = 2;
-    float tamanho_tela[2];
-    float tamanho_menu[2];
-    float tamanho_botao_menu[2];
-    float tamanho_jogador[2];
-    float tamanho_inimigo1[2];
-    float tamanho_inimigo2[2];
-    GetTamanhos(&escala,&tamanho_tela,&tamanho_menu,&tamanho_botao_menu,&tamanho_jogador,&tamanho_inimigo1,&tamanho_inimigo2);
-    VariveisGerais geral = {SDL_CreateWindow("Teste", tamanho_tela[0], tamanho_tela[1], 0)};// (640,360) resolução base. não pode ser menor;
+    TAMANHOS tamanhos;
+    GetTamanhos(&tamanhos.escala,&tamanhos.tamanho_tela,&tamanhos.tamanho_menu,&tamanhos.tamanho_botao_menu,&tamanhos.tamanho_jogador,&tamanhos.tamanho_bloco,&tamanhos.tamanho_inimigo1,&tamanhos.tamanho_inimigo2);
+    VariveisGerais geral = {SDL_CreateWindow("Teste", tamanhos.tamanho_tela[0], tamanhos.tamanho_tela[1], 0)};// (640,360) resolução base. não pode ser menor;
     geral.renderizador = SDL_CreateRenderer(geral.janela,NULL);
     geral.cena = CENA_MENU;
     geral.rodando = true;
@@ -28,8 +22,8 @@ int main(void) {
     {100,100,50,50}
     };
 
-    VariveisMenu menu={{30,200,30}}; // cor de fundo
-    InitMenu(&geral, &menu);
+    VariveisMenu menu={{255,255,255}}; // cor de fundo
+    InitMenu(&geral, &menu, tamanhos);
 
     VariveisPause pause={{30,200,30}};// cor de fundo
     InitPause(&geral, &pause);

@@ -23,14 +23,16 @@ typedef struct Player{
 
 typedef struct Botao{
     int timer;
-    char texto[30];
+    char *texto;
     SDL_FRect retangulo;
     int cor[3];
     int cor2[3];
     int indice;
     bool sobre;
+    float proporcao;
     SDL_Texture *textura;
     SDL_Texture *imagem;
+    SDL_FRect partes[3][3];
 } Botao;
 
 
@@ -76,8 +78,20 @@ typedef struct VariveisJogo{
     int velocidade_jogador_y;
 } VariveisJogo;
 
+typedef struct TAMANHOS{
+    int escala;
+    float tamanho_tela[2];
+    float tamanho_menu[2];
+    float tamanho_botao_menu[2];
+    float tamanho_jogador[2];
+    float tamanho_inimigo1[2];
+    float tamanho_inimigo2[2];
+    float tamanho_bloco[2];
+} TAMANHOS;
+
 Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file);
-void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]);
+Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto,char *file, char *texto, int cor[3], int cor2[3], int indice, TTF_Font *fonte, SDL_Color cor_fonte);
+void GetTamanhos(int *escala, float (*tamanho_tela)[2], float (*tamanho_menu)[2], float (*tamanho_botao_menu)[2], float (*tamanho_jogador)[2], float (*tamanho_bloco)[2], float (*tamanho_inimigo1)[2], float (*tamanho_inimigo2)[2]);
 void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura);
 void DesenharBotao(SDL_Renderer *renderer, Botao botao);
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
@@ -87,7 +101,7 @@ void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float bo
 
 void ModuloEvento(VariveisGerais *geral);
 
-void InitMenu(VariveisGerais *geral, VariveisMenu *menu);
+void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos);
 void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu);
 void CenaMenuDesenhar(VariveisGerais *geral, VariveisMenu *menu);
 

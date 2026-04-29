@@ -6,9 +6,9 @@
 #include "gerais.h"
 
 
-void InitMenu(VariveisGerais *geral, VariveisMenu *menu){
+void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos){
     //Criação do menu para os botões
-    SDL_FRect rect_moldura = {0,0,300,300};
+    SDL_FRect rect_moldura = {0,0,tamanhos.tamanho_menu[0],tamanhos.tamanho_menu[1]};
     
     //obtenção do rect da janela
     int janela_x, janela_y, janela_w, janela_h;
@@ -19,11 +19,13 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu){
     // Criação do menu
     menu->moldura = InitMoldura(geral->renderizador, &rect_moldura,50,"imagens/moldura de madeira.png");
 
+    TTF_Font *fonte = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", tamanhos.tamanho_tela[1]/10);
+    SDL_Color cor_fonte = {255,255,255,255};
     //Criação dos botões
-    menu->botao_iniciar = (Botao){0, "Iniciar Jogo",  (SDL_FRect){0,0,100,30}, {70,70,70}, {30,30,30},CENA_JOGO,0};
-    menu->botao_conf    = (Botao){0, "Configuracoes", (SDL_FRect){0,0,100,30}, {70,70,70}, {30,30,30},CENA_CONF,0};
-    menu->botao_sair    = (Botao){0, "Sair do Jogo",  (SDL_FRect){0,0,100,30}, {70,70,70}, {30,30,30},CENA_SAIR,0};
-    
+    menu->botao_iniciar = InitBotao(geral->renderizador, &(SDL_FRect){0,0,tamanhos.tamanho_botao_menu[0],tamanhos.tamanho_botao_menu[1]}, 50,"imagens/botão.png", "Iniciar Jogo", (int[3]){70,70,70}, (int[3]){30,30,30}, CENA_JOGO,fonte, cor_fonte);
+    menu->botao_conf    = InitBotao(geral->renderizador, &(SDL_FRect){0,0,tamanhos.tamanho_botao_menu[0],tamanhos.tamanho_botao_menu[1]}, 50,"imagens/botão.png", "Configuracoes", (int[3]){70,70,70}, (int[3]){30,30,30}, CENA_CONF,fonte, cor_fonte);
+    menu->botao_sair    = InitBotao(geral->renderizador, &(SDL_FRect){0,0,tamanhos.tamanho_botao_menu[0],tamanhos.tamanho_botao_menu[1]}, 50,"imagens/botão.png", "Sair do Jogo", (int[3]){70,70,70}, (int[3]){30,30,30}, CENA_SAIR,fonte, cor_fonte);
+
     //necessario para colocar o texto nos botões de forma mais prática
     Botao *botoes[] = {
         &menu->botao_iniciar, 
@@ -36,17 +38,6 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu){
         &menu->botao_conf.retangulo,
         &menu->botao_sair.retangulo};
         
-    //pegando a fonte
-    TTF_Font *fonte = TTF_OpenFont("C:/Windows/Fonts/arial.ttf", 244);
-    SDL_Color cor_fonte = {255,255,255,255};
-
-    //atribuindo o texto e uma imagem a cada botão
-    for(int i = 0; i < 3; i++){
-        SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, botoes[i]->texto, 0, cor_fonte);
-        botoes[i]->textura = SDL_CreateTextureFromSurface(geral->renderizador, surface_texto);
-        botoes[i]->imagem = IMG_LoadTexture(geral->renderizador, "imagens/botão.png");
-        SDL_SetTextureScaleMode(botoes[i]->imagem,SDL_SCALEMODE_NEAREST);
-    }
     CentralizarRectsInRectV(&menu->moldura.retangulo, retangulos ,3,0.1,0.2);
 }
 
