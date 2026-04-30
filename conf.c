@@ -7,6 +7,7 @@
 
 void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
 {
+
     // fonte
     TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_tela[1] / 10);
 
@@ -23,16 +24,16 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     CentralizarRectInRect(&rect_janela, &rect_moldura);
 
     conf->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&conf->moldura, 50);
+    CalcularMolduraPartes(&conf->moldura, 48);
 
     // Botão para sair das configurações
     conf->botao_sair =
     InitBotao(geral->renderizador,
         &(SDL_FRect){
             conf->moldura.retangulo.x + conf->moldura.retangulo.w - 20,
-            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.tamanho_botao_menu[1] - 20,
-            tamanhos.tamanho_botao_menu[0],
-            tamanhos.tamanho_botao_menu[1]}, // retangulo base
+            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.tamanho_botao1[1] - 20,
+            tamanhos.tamanho_botao1[0],
+            tamanhos.tamanho_botao1[1]}, // retangulo base
         "assets/images/ui/buttons/botão.png",
         "Voltar",
         (SDL_Color){70, 70, 70, 255},
@@ -46,34 +47,33 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     sprintf(resolucao_atual,"(%d, %d)",geral->resolucao_atual[0],geral->resolucao_atual[1]);
     char *textos[] = {
         "640, 360",
-        "854, 480",
+        "960, 540",
         "1280, 720",
-        "1366, 768",
         "1600, 900",
         "1920, 1080",
+        "2240, 1260",
         "2560, 1440"
     };
     conf->botao_reso = 
     InitBotaoExpansivo(geral->renderizador,
         &(SDL_FRect){
-            conf->moldura.retangulo.x,
-            conf->moldura.retangulo.y,
-            tamanhos.tamanho_botao_menu[0]*0.8,
-            tamanhos.tamanho_botao_menu[1]*0.8}, // retangulo base
+            conf->moldura.retangulo.x + 48,
+            conf->moldura.retangulo.y + 48,
+            tamanhos.tamanho_botao1[0],
+            tamanhos.tamanho_botao1[1]}, // retangulo base
         "assets/images/ui/buttons/botão.png",
         resolucao_atual,
         textos,
-        (SDL_Color){70, 70, 70, 255},
-        (SDL_Color){30, 30, 30, 255},
+        (SDL_Color)BRANCO,
+        (SDL_Color)SEMI_PRETO,
         CENA_CONF, fonte,
         (SDL_Color)PRETO,
         7);
     CalcularBotaoExpansivoPartes(&conf->botao_reso);
 }
 
-bool CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
+void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
 {   
-    int resolucao;
     // obtendo a localização do mouese
     SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
     geral->ponto_mouse.x = geral->mouse_x;
@@ -89,18 +89,23 @@ bool CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
         int temp = geral->cena;
         geral->cena = geral->cena_passada;
         geral->cena_passada=temp;
-        return tamanhos->escala != tamanhos->escala;
+        if(conf->reso_inicial != tamanhos->escala) {
+            conf->reso_inicial = tamanhos->escala;
+            geral->troca_reso = true;
+        }
     }
     if(VerificarBotao(botoes[1],geral->ponto_mouse,geral->botao_mouse_direito)){
         conf->botao_reso.expandido = !conf->botao_reso.expandido;
     }
     if(conf->botao_reso.expandido){
         for(int i = 0; i < 7; i++){
-            if(VerificarBotao(&conf->botao_reso.botao_filho[i],geral->ponto_mouse,geral->botao_mouse_direito)){
-                resolucao = tamanhos->escala;
-                tamanhos->escala = i;
-                CalcularGeral(geral, tamanhos);
-                InitConf(geral, conf, *tamanhos);
+            if(VerificarBotao(&conf->botao_reso.botao_filho[i],geral->ponto_mouse,geral->botao_mouse_direito) ){
+                if(i == tamanhos->escala)conf->botao_reso.expandido = false;
+                else{
+                    tamanhos->escala = i;
+                    CalcularGeral(geral, tamanhos);
+                    InitConf(geral, conf, *tamanhos);
+                }
             }
         }
     }

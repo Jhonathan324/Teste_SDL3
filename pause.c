@@ -23,39 +23,39 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do pause com base na tela
 
     pause->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&pause->moldura,50);
+    CalcularMolduraPartes(&pause->moldura,48);
 
     // Criação do pause
     // Criação dos botões
     pause->botao_iniciar =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Continuar",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                    CENA_JOGO,
                    fonte,
                   (SDL_Color)PRETO);
 
     pause->botao_conf =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Configuracoes",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                   CENA_CONF,
                   fonte,
                   (SDL_Color)PRETO);
 
     pause->botao_sair =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Menu Inicial",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                   CENA_MENU, fonte,
                   (SDL_Color)PRETO);
 

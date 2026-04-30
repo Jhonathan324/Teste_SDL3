@@ -34,6 +34,7 @@ int main(void)
     //iniciazação das variaveis da cena da conf
     VariveisConf conf;
     InitConf(&geral, &conf, tamanhos);
+    conf.reso_inicial = tamanhos.escala;
 
     while (geral.rodando)
     {
@@ -45,8 +46,7 @@ int main(void)
 
         switch (geral.cena)
         {
-            // Cenas
-
+        // Cenas
         case (CENA_MENU):
             CenaMenuLoop(&geral, &menu);
             CenaMenuDesenhar(&geral, &menu);
@@ -76,7 +76,11 @@ int main(void)
             break;
         }
 
-        
+        if (geral.troca_reso ){
+            geral.troca_reso = false;
+            InitMenu(&geral, &menu, tamanhos);
+            InitPause(&geral, &pause, tamanhos);
+        }
 
         // Limpar a Tela
         SDL_RenderPresent(geral.renderizador);

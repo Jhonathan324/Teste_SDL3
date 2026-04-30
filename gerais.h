@@ -20,7 +20,7 @@ enum ESTADO_JOGO
     CENA_JOGO,
     CENA_PAUSE,
     CENA_CONF,
-    CENA_CREDITOS,
+    CENA_CREDITOS, // algum dia eu vou usar
     CENA_SAIR,
 };
 
@@ -32,16 +32,27 @@ typedef struct Moldura
     SDL_FRect partes[3][3];
 } Moldura;
 
-typedef struct Botao
-{
-    int timer;
-    char *texto;
+typedef struct Marcador{
     SDL_FRect retangulo;
+    int timer;
+    bool sobre;
     SDL_Color cor1;
     SDL_Color cor2;
-    int indice;
-    bool sobre;
+    SDL_Texture *imagem1;
+    SDL_Texture *imagem2;
+    SDL_FRect partes[3][3];
+} Marcador;
+
+typedef struct Botao
+{
+    SDL_FRect retangulo;
+    char *texto;
     float proporcao;
+    int timer;
+    bool sobre;
+    int indice;
+    SDL_Color cor1;
+    SDL_Color cor2;
     SDL_Texture *textura;
     SDL_Texture *imagem;
     SDL_FRect partes[3][3];
@@ -61,7 +72,7 @@ typedef struct TAMANHOS
     int escala;
     float tamanho_tela[2];
     float tamanho_menu[2];
-    float tamanho_botao_menu[2];
+    float tamanho_botao1[2];
     float tamanho_jogador[2];
     float tamanho_inimigo1[2];
     float tamanho_inimigo2[2];
@@ -94,6 +105,7 @@ typedef struct VariveisGerais
     Player jogador;
     int resolucao_atual[2];
     bool fullscrean;
+    bool troca_reso;
 } VariveisGerais;
 
 typedef struct VariveisMenu
@@ -128,8 +140,10 @@ typedef struct VariveisConf
     SDL_Color cor_fundo;
     Moldura moldura;
     Botao botao_sair;
+    Botao troca_fullscreen;
     BotaoExpansivo botao_reso;
     SDL_Texture *imagem;
+    int reso_inicial;
 } VariveisConf;
 
 // Funções especificas
@@ -175,7 +189,7 @@ void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo);
 void CenaJogoDesenhar(VariveisGerais *geral, VariveisJogo *jogo);
 
 void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos);
-bool CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos);
+void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos);
 void CenaConfDesenhar(VariveisGerais *geral, VariveisConf *conf);
 
 #endif // GERAIS_H_INCLUDED

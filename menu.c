@@ -8,7 +8,7 @@
 void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
 {
     // fonte
-    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_tela[1] / 10);
+    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_botao1[1]);
 
     // fundo
     menu->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/UI/backgrounds/menu.png");
@@ -23,40 +23,40 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
 
     menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&menu->moldura, 50);
+    CalcularMolduraPartes(&menu->moldura, 48);
 
     // Criação dos botões
     menu->botao_iniciar =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Iniciar Jogo",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                   CENA_JOGO,
                   fonte,
-                  (SDL_Color){0, 0, 0, 255});
+                  (SDL_Color)PRETO);
 
     menu->botao_conf =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Configuracoes",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                   CENA_CONF,
                   fonte,
-                  (SDL_Color){0, 0, 0, 255});
+                  (SDL_Color)PRETO);
 
     menu->botao_sair =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
+                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
                   "Sair do Jogo",
                   (SDL_Color){70, 70, 70, 255},
-                  (SDL_Color){30, 30, 30, 255},
+                  (SDL_Color)SEMI_PRETO,
                   CENA_SAIR, fonte,
-                  (SDL_Color){0, 0, 0, 255});
+                  (SDL_Color)PRETO);
 
     // Necessario para alinhar os botões de forma mais pratica
     SDL_FRect *retangulos[] = {
