@@ -2,8 +2,11 @@
 #include <SDL3/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <stdbool.h>
 #include "gerais.h"
+
+// Para eu não me perder as funções deste .c esta organizado na mesma ordem das funções do gerais.h
 
 void GetTamanhos(TAMANHOS *tamanhos)
 {
@@ -77,34 +80,112 @@ void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo)
     retangulo->w = fretangulo->w;
 }
 
-Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, int tamanho_canto, char *file)
+void CentralizarRectInRect(SDL_FRect *pai, SDL_FRect *filho)
 {
-    if (retangulo->w < tamanho_canto * 2)
+    filho->x = pai->x + (pai->w - filho->w) / 2;
+    filho->y = pai->y + (pai->h - filho->h) / 2;
+}
+
+bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click){
+    if (botao->timer)
     {
-        retangulo->w = tamanho_canto * 2;
+        if (botao->timer > 1)
+            botao->timer--;
+   
+        else
+        {
+            botao->timer = 0;
+            return true;
+        }
     }
-    if (retangulo->h < tamanho_canto * 2)
+    
+    // Cria um retangulo para verificar as colisões como o mouse
+    SDL_Rect retangulo_colisao;
+    AtribuirFRectInRectA(&botao->retangulo, &retangulo_colisao);
+
+    // verifica se o mouse está emcima do botão
+    if (SDL_PointInRect(&mouse, &retangulo_colisao))
+        botao->sobre = true;
+    else
+        botao->sobre = false;
+
+    // verifica se o botão de sair foi clicado
+    if (botao->sobre && click)
+        botao->timer = 15;
+    
+    
+        
+    return false;
+}
+
+void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y)
+{
+    borda_x = borda_x * pai->w;
+    borda_y = borda_y * pai->h;
+    float soma = 0;
+    for (int i = 0; i < n; i++)
+        soma += filho[i]->h;
+    float espaco_interno_remanecente = (pai->h - borda_y * 2) - soma;
+    float espacamento = espaco_interno_remanecente / (n - 1);
+    for (int i = 0; i < n; i++)
     {
-        retangulo->h = tamanho_canto * 2;
+        filho[i]->x = pai->x + (pai->w - filho[i]->w) / 2;
+        if (i != 0)
+        {
+            filho[i]->y = filho[i - 1]->y + filho[i - 1]->h + espacamento;
+        }
+        else
+        {
+            filho[i]->y = pai->y + borda_y;
+        }
     }
+}
+
+Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, char *file)
+{
     SDL_Texture *textura = IMG_LoadTexture(renderer, file);
     SDL_SetTextureScaleMode(textura, SDL_SCALEMODE_NEAREST);
     Moldura moldura = {*retangulo, textura};
-    int x = retangulo->x;
-    int y = retangulo->y;
-    int w = retangulo->w;
-    int h = retangulo->h;
-    moldura.partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
-    moldura.partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
-    moldura.partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
-    moldura.partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    moldura.partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
-    moldura.partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    moldura.partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-    moldura.partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
-    moldura.partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+
     return moldura;
 }
+
+void CalcularMolduraPartes(Moldura *moldura, float tamanho_canto)
+{
+    if (moldura->retangulo.w < tamanho_canto * 2)
+    {
+        moldura->retangulo.w = tamanho_canto * 2;
+    }
+    if (moldura->retangulo.h < tamanho_canto * 2)
+    {
+        moldura->retangulo.h = tamanho_canto * 2;
+    }
+    int x = moldura->retangulo.x;
+    int y = moldura->retangulo.y;
+    int w = moldura->retangulo.w;
+    int h = moldura->retangulo.h;
+    moldura->partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
+    moldura->partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
+    moldura->partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
+    moldura->partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    moldura->partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
+    moldura->partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    moldura->partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+    moldura->partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
+    moldura->partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+}
+
+void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura)
+{
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 3; j++)
+            SDL_RenderTexture(
+                renderer,
+                moldura.textura,
+                &(SDL_FRect){EscalaMoldura * j, EscalaMoldura * i, EscalaMoldura, EscalaMoldura},
+                &moldura.partes[i][j]);
+}
+
 Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte)
 {
     // texto
@@ -125,8 +206,8 @@ Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char
         0,          // timer
         texto,      // texto
         *retangulo, // retangulo
-        cor1,
-        cor2,                               // cor1 e cor2
+        cor1,       // cor1 e cor2
+        cor2,
         indice,                             // indice
         false,                              // sobre (verificar se o mouse esta sobre)
         proporcao,                          // proporcao (porporção entre a largura sobre altura)
@@ -144,7 +225,7 @@ Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char
     return botao;
 }
 
-void CalcularBotaoParte(Botao *botao)
+void CalcularBotaoPartes(Botao *botao)
 {
     float tamanho_canto;
     float x = botao->retangulo.x;
@@ -165,17 +246,6 @@ void CalcularBotaoParte(Botao *botao)
     botao->partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
     botao->partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
     botao->partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-}
-
-void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura)
-{
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            SDL_RenderTexture(
-                renderer,
-                moldura.textura,
-                &(SDL_FRect){EscalaMoldura * j, EscalaMoldura * i, EscalaMoldura, EscalaMoldura},
-                &moldura.partes[i][j]);
 }
 
 void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
@@ -220,6 +290,193 @@ void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
     }
 }
 
+BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char *texto, char *textos[], SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte, int n)
+{
+    // texto
+    int x, y;
+    float proporcao = 1;
+    SDL_Texture *textura_texto;
+    if (texto)
+    {
+        SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, texto, 0, cor_fonte);
+        textura_texto = SDL_CreateTextureFromSurface(renderer, surface_texto);
+        TTF_GetStringSize(fonte, texto, 0, &x, &y);
+        proporcao = (float)x / y;
+        retangulo->w = retangulo->h * proporcao;
+    }
+    // Botão
+
+    Botao botao = {
+        0,          // timer
+        texto,      // texto
+        *retangulo, // retangulo
+        cor1,       // cor1 e cor2
+        cor2,
+        indice,                             // indice
+        false,                              // sobre (verificar se o mouse esta sobre)
+        proporcao,                          // proporcao (porporção entre a largura sobre altura)
+        textura_texto,                      // textura texto
+        IMG_LoadTexture(renderer, imagem)}; // textura da imagem
+
+    float tamanho_canto;
+    if (retangulo->h >= retangulo->w)
+        tamanho_canto = retangulo->w / 2;
+    else
+        tamanho_canto = retangulo->h / 2;
+
+    // imagem
+    SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
+
+    Botao *botoes = malloc(sizeof(Botao) * n);
+    for (int i = 0; i < n; i++)
+    {
+        botoes[i] = botao;
+        botoes[i].texto = textos[i];
+        botoes[i].retangulo.y = botao.retangulo.y + botao.retangulo.h * (i + 1);
+
+        SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, textos[i], 0, cor_fonte);
+        botoes[i].textura = SDL_CreateTextureFromSurface(renderer, surface_texto);
+        TTF_GetStringSize(fonte, textos[i], 0, &x, &y);
+        botoes[i].proporcao = (float)x / y;
+        //printf("%s ",botoes[i].texto);
+        //printf("%f\n",botoes[i].retangulo.y);
+    }
+    BotaoExpansivo botao_e = {n, botao, botoes, false};
+    return botao_e;
+}
+
+void CalcularBotaoExpansivoPartes(BotaoExpansivo *botao)
+{
+    float tamanho_canto;
+    float x = botao->botao_pai.retangulo.x;
+    float y = botao->botao_pai.retangulo.y;
+    float w = botao->botao_pai.retangulo.w;
+    float h = botao->botao_pai.retangulo.h;
+    
+    if (h >= w)
+    tamanho_canto = w / 2;
+    else
+    tamanho_canto = h / 2;
+    botao->botao_pai.partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
+    botao->botao_pai.partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
+    botao->botao_pai.partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
+    botao->botao_pai.partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    botao->botao_pai.partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
+    botao->botao_pai.partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+    botao->botao_pai.partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+    botao->botao_pai.partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
+    botao->botao_pai.partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+    for (int i = 0; i < botao->n; i++)
+    {
+        x = botao->botao_filho[i].retangulo.x;
+        y = botao->botao_filho[i].retangulo.y;
+        w = botao->botao_filho[i].retangulo.w;
+        h = botao->botao_filho[i].retangulo.h;
+        
+        
+
+        if (h >= w)
+            tamanho_canto = w / 2;
+        else
+            tamanho_canto = h / 2;
+        botao->botao_filho[i].partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
+        botao->botao_filho[i].partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
+        botao->botao_filho[i].partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
+        botao->botao_filho[i].partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+        botao->botao_filho[i].partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
+        botao->botao_filho[i].partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
+        botao->botao_filho[i].partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+        botao->botao_filho[i].partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
+        botao->botao_filho[i].partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
+        //printf("%s ",botao->botao_filho[i].texto);
+        //printf("%f \n",botao->botao_filho[i].retangulo.y);
+    }
+}
+
+void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
+{
+    if (!botao.botao_pai.imagem)
+    {
+        if (!botao.botao_pai.sobre)
+        {
+            SDL_SetRenderDrawColor(renderizador, botao.botao_pai.cor1.r, botao.botao_pai.cor1.g, botao.botao_pai.cor1.b, botao.botao_pai.cor1.a);
+        }
+        else
+        {
+            SDL_SetRenderDrawColor(renderizador, botao.botao_pai.cor2.r, botao.botao_pai.cor2.g, botao.botao_pai.cor2.b, botao.botao_pai.cor2.a);
+        }
+        SDL_RenderFillRect(renderizador, &botao.botao_pai.retangulo);
+    }
+    else
+    {
+        if (botao.botao_pai.partes)
+            for (int i = 0; i < 3; i++)
+                for (int j = 0; j < 3; j++)
+                    SDL_RenderTexture(
+                        renderizador,
+                        botao.botao_pai.imagem,
+                        &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
+                        &botao.botao_pai.partes[i][j]);
+        else
+            SDL_RenderTexture(
+                renderizador,
+                botao.botao_pai.imagem,
+                NULL,
+                &botao.botao_pai.retangulo);
+    }
+    if (botao.botao_pai.textura)
+    {
+        SDL_FRect retangulo_texto = botao.botao_pai.retangulo;
+        retangulo_texto.h *= 0.8;
+        retangulo_texto.w = retangulo_texto.h * botao.botao_pai.proporcao;
+        retangulo_texto.x = (botao.botao_pai.retangulo.x + (botao.botao_pai.retangulo.w - retangulo_texto.w) / 2);
+        retangulo_texto.y = (botao.botao_pai.retangulo.y + (botao.botao_pai.retangulo.h - retangulo_texto.h) / 2);
+        SDL_RenderTexture(renderizador, botao.botao_pai.textura, NULL, &retangulo_texto);
+    }
+    for (int i1 = 0; i1 < botao.n && botao.expandido; i1++)
+    {
+        if (!botao.botao_filho[i1].imagem)
+        {
+            if (!botao.botao_filho[i1].sobre)
+            {
+                SDL_SetRenderDrawColor(renderizador, botao.botao_filho[i1].cor1.r, botao.botao_filho[i1].cor1.g, botao.botao_filho[i1].cor1.b, botao.botao_filho[i1].cor1.a);
+            }
+            else
+            {
+                SDL_SetRenderDrawColor(renderizador, botao.botao_filho[i1].cor2.r, botao.botao_filho[i1].cor2.g, botao.botao_filho[i1].cor2.b, botao.botao_filho[i1].cor2.a);
+            }
+            SDL_RenderFillRect(renderizador, &botao.botao_filho[i1].retangulo);
+        }
+        else
+        {
+            if (botao.botao_filho[i1].partes)
+                for (int i = 0; i < 3; i++)
+                    for (int j = 0; j < 3; j++){
+                        SDL_RenderTexture(
+                            renderizador,
+                            botao.botao_filho[i1].imagem,
+                            &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
+                            &botao.botao_filho[i1].partes[i][j]);
+                        }
+            else
+                SDL_RenderTexture(
+                    renderizador,
+                    botao.botao_filho[i1].imagem,
+                    NULL,
+                    &botao.botao_filho[i1].retangulo);
+        }
+        if (botao.botao_filho[i1].textura)
+        {
+            SDL_FRect retangulo_texto = botao.botao_filho[i1].retangulo;
+            retangulo_texto.h *= 0.8;
+            retangulo_texto.w = retangulo_texto.h * botao.botao_filho[i1].proporcao;
+            retangulo_texto.x = (botao.botao_filho[i1].retangulo.x + (botao.botao_filho[i1].retangulo.w - retangulo_texto.w) / 2);
+            retangulo_texto.y = (botao.botao_filho[i1].retangulo.y + (botao.botao_filho[i1].retangulo.h - retangulo_texto.h) / 2);
+            SDL_RenderTexture(renderizador, botao.botao_filho[i1].textura, NULL, &retangulo_texto);
+        }
+    }
+}
+
 void ModuloEvento(VariveisGerais *jogo)
 {
     if (jogo->evento.type == SDL_EVENT_QUIT)
@@ -230,33 +487,4 @@ void ModuloEvento(VariveisGerais *jogo)
         jogo->botao_mouse_direito = true;
     else
         jogo->botao_mouse_direito = false;
-}
-
-void CentralizarRectInRect(SDL_FRect *pai, SDL_FRect *filho)
-{
-    filho->x = pai->x + (pai->w - filho->w) / 2;
-    filho->y = pai->y + (pai->h - filho->h) / 2;
-}
-
-void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y)
-{
-    borda_x = borda_x * pai->w;
-    borda_y = borda_y * pai->h;
-    float soma = 0;
-    for (int i = 0; i < n; i++)
-        soma += filho[i]->h;
-    float espaco_interno_remanecente = (pai->h - borda_y * 2) - soma;
-    float espacamento = espaco_interno_remanecente / (n - 1);
-    for (int i = 0; i < n; i++)
-    {
-        filho[i]->x = pai->x + (pai->w - filho[i]->w) / 2;
-        if (i != 0)
-        {
-            filho[i]->y = filho[i - 1]->y + filho[i - 1]->h + espacamento;
-        }
-        else
-        {
-            filho[i]->y = pai->y + borda_y;
-        }
-    }
 }

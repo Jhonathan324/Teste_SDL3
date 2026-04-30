@@ -15,14 +15,14 @@ int main(void)
     TAMANHOS tamanhos;
     tamanhos.escala = 0;
     VariveisGerais geral;
-    InitGeral(&geral,&tamanhos);
+    InitGeral(&geral, &tamanhos);
 
     //iniciazação das variaveis da cena menu
     VariveisMenu menu = {AZUL}; // cor de fundo
     InitMenu(&geral, &menu, tamanhos);
 
     //iniciazação das variaveis da cena pause
-    VariveisPause pause = {VERDE}; // cor de fundo
+    VariveisPause pause = {SEMI_PRETO}; // cor de fundo
     InitPause(&geral, &pause, tamanhos);
 
     //iniciazação das variaveis da cena jogo
@@ -63,7 +63,7 @@ int main(void)
             break;
 
         case (CENA_CONF):
-            CenaConfLoop(&geral, &conf);
+            CenaConfLoop(&geral, &conf, &tamanhos);
             CenaConfDesenhar(&geral, &conf);
             break;
 
@@ -75,6 +75,8 @@ int main(void)
             geral.cena = CENA_MENU;
             break;
         }
+
+        
 
         // Limpar a Tela
         SDL_RenderPresent(geral.renderizador);

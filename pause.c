@@ -22,7 +22,8 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
     SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do pause com base na tela
 
-    pause->moldura = InitMoldura(geral->renderizador, &rect_moldura, 50, "assets/images/ui/panels/moldura de madeira.png");
+    pause->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
+    CalcularMolduraPartes(&pause->moldura,50);
 
     // Criação do pause
     // Criação dos botões
@@ -35,7 +36,7 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
                   (SDL_Color){30, 30, 30, 255},
                    CENA_JOGO,
                    fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  (SDL_Color)PRETO);
 
     pause->botao_conf =
         InitBotao(geral->renderizador,
@@ -46,7 +47,7 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
                   (SDL_Color){30, 30, 30, 255},
                   CENA_CONF,
                   fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  (SDL_Color)PRETO);
 
     pause->botao_sair =
         InitBotao(geral->renderizador,
@@ -56,7 +57,7 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color){30, 30, 30, 255},
                   CENA_MENU, fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  (SDL_Color)PRETO);
 
     // Necessario para alinhar os botões de forma mais pratica
     SDL_FRect *retangulos[] = {
@@ -66,49 +67,30 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
     CentralizarRectsInRectV(&pause->moldura.retangulo, retangulos, 3, 0.1, 0.2);
 
     //Calculo das partes dos botões para as imagens
-    CalcularBotaoParte(&pause->botao_iniciar);
-    CalcularBotaoParte(&pause->botao_conf);
-    CalcularBotaoParte(&pause->botao_sair);
+    CalcularBotaoPartes(&pause->botao_iniciar);
+    CalcularBotaoPartes(&pause->botao_conf);
+    CalcularBotaoPartes(&pause->botao_sair);
 }
 
 void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause)
 {
+    SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
+    geral->ponto_mouse.x = geral->mouse_x;
+    geral->ponto_mouse.y = geral->mouse_y;
+
+    int quant_botoes = 3;
     Botao *botoes[] = {
         &pause->botao_iniciar,
         &pause->botao_conf,
         &pause->botao_sair};
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < quant_botoes; i++)
     {
-        if (botoes[i]->timer)
-        {
-            if (botoes[i]->timer > 1)
-                botoes[i]->timer--;
-            else
-            {
-                geral->cena_passada = geral->cena;
-                geral->cena = botoes[i]->indice;
-                botoes[i]->timer = 0;
-            }
-        }
-        SDL_Rect retangulo_colisao;
-        AtribuirFRectInRectA(&botoes[i]->retangulo, &retangulo_colisao);
-        if (SDL_PointInRect(&geral->ponto_mouse, &retangulo_colisao))
-            botoes[i]->sobre = true;
-        else
-        {
-            botoes[i]->sobre = false;
-        }
-
-        if (botoes[i]->sobre && geral->botao_mouse_direito)
-        {
-            botoes[i]->timer = 15;
+        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_direito)){
+            geral->cena_passada = geral->cena;
+            geral->cena = botoes[i]->indice;
         }
     }
-
-    SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
-    geral->ponto_mouse.x = geral->mouse_x;
-    geral->ponto_mouse.y = geral->mouse_y;
 }
 
 void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause)
@@ -117,9 +99,10 @@ void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause)
         &pause->botao_iniciar,
         &pause->botao_conf,
         &pause->botao_sair};
+
     // limpeza de tela
-    SDL_SetRenderDrawColor(geral->renderizador, pause->cor_fundo.r, pause->cor_fundo.g, pause->cor_fundo.b, pause->cor_fundo.a);
-    SDL_RenderClear(geral->renderizador);
+    // SDL_SetRenderDrawColor(geral->renderizador, pause->cor_fundo.r, pause->cor_fundo.g, pause->cor_fundo.b, pause->cor_fundo.a);
+    // SDL_RenderClear(geral->renderizador);
 
     // botões
     DesenharMoldura(geral->renderizador, pause->moldura);

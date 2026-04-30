@@ -22,7 +22,8 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
 
-    menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, 50, "assets/images/ui/panels/moldura de madeira.png");
+    menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
+    CalcularMolduraPartes(&menu->moldura, 50);
 
     // Criação dos botões
     menu->botao_iniciar =
@@ -65,47 +66,31 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     CentralizarRectsInRectV(&menu->moldura.retangulo, retangulos, 3, 0.1, 0.2);
 
     // Calculo das partes dos botões para as imagens
-    CalcularBotaoParte(&menu->botao_iniciar);
-    CalcularBotaoParte(&menu->botao_conf);
-    CalcularBotaoParte(&menu->botao_sair);
+    CalcularBotaoPartes(&menu->botao_iniciar);
+    CalcularBotaoPartes(&menu->botao_conf);
+    CalcularBotaoPartes(&menu->botao_sair);
 }
 
 void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu)
 {
+    SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
+    geral->ponto_mouse.x = geral->mouse_x;
+    geral->ponto_mouse.y = geral->mouse_y;
+
+    int quant_botoes = 3;
     Botao *botoes[] = {
         &menu->botao_iniciar,
         &menu->botao_conf,
         &menu->botao_sair};
 
-    for (int i = 0; i < 3; i++)
+    for (int i = 0; i < quant_botoes; i++)
     {
-        if (botoes[i]->timer)
-        {
-            if (botoes[i]->timer > 1)
-                botoes[i]->timer--;
-            else
-            {
-                geral->cena_passada = geral->cena;
-                geral->cena = botoes[i]->indice;
-                botoes[i]->timer = 0;
-            }
+        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_direito)){
+            geral->cena_passada = geral->cena;
+            geral->cena = botoes[i]->indice;
         }
-        // criar o retangulo para os calculos de colisão com o mause
-        SDL_Rect retangulo_colisao;
-        AtribuirFRectInRectA(&botoes[i]->retangulo, &retangulo_colisao);
-        
-        // Verifica se o mouse esta sobre o botão
-        if (SDL_PointInRect(&geral->ponto_mouse, &retangulo_colisao)) botoes[i]->sobre = true;
-        else botoes[i]->sobre = false;
-        
-        // Inicia o timer do botão se ele foi clicado
-        if (botoes[i]->sobre && geral->botao_mouse_direito) botoes[i]->timer = 15;
-        
     }
 
-    SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
-    geral->ponto_mouse.x = geral->mouse_x;
-    geral->ponto_mouse.y = geral->mouse_y;
 }
 
 void CenaMenuDesenhar(VariveisGerais *geral, VariveisMenu *menu)
