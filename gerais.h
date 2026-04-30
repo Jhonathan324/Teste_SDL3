@@ -1,13 +1,13 @@
 #ifndef GERAIS_H_INCLUDED
 #define GERAIS_H_INCLUDED
 #include <SDL3/SDL.h>
-#define COR1        {20,  20,  20}
-#define CORCORFUNDO {20,  20,  20}
-#define PRETO       {0,   0,   0}
-#define BRANCO      {255, 255, 255}
-#define VERMELHO    {255, 20,  20}
-#define VERDE       {20,  255, 20}
-#define AZUL        {20,  20,  25}
+#define CORCORFUNDO {20, 20, 20, 255}
+#define COR1 {20, 20, 20, 255}
+#define PRETO {0, 0, 0, 255}
+#define BRANCO {255, 255, 255, 255}
+#define VERMELHO {255, 20, 20, 255}
+#define VERDE {20, 255, 20, 255}
+#define AZUL {20, 20, 25, 255}
 #define EscalaMoldura 16
 #define EscalaBotao 8
 
@@ -17,9 +17,8 @@ enum ESTADO_JOGO
     CENA_JOGO,
     CENA_PAUSE,
     CENA_CONF,
-    CENA_SAIR,
     CENA_CREDITOS,
-    CENA_MENU_RESOLUCAO
+    CENA_SAIR,
 };
 
 typedef struct Player
@@ -59,6 +58,7 @@ typedef struct VariveisGerais
     SDL_Event evento;
     SDL_Point ponto_mouse;
     int cena;
+    int cena_passada;
     bool rodando;
     float mouse_x, mouse_y;
     bool botao_mouse_direito;
@@ -68,32 +68,38 @@ typedef struct VariveisGerais
 
 typedef struct VariveisMenu
 {
-    int cor_fundo[3];
+    SDL_Color cor_fundo;
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_conf;
     Botao botao_sair;
-    SDL_Texture fundo;
     SDL_Texture *imagem;
 } VariveisMenu;
 
 typedef struct VariveisPause
 {
-    int cor_fundo[3];
+    SDL_Color cor_fundo;
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_conf;
     Botao botao_sair;
-    SDL_Texture fundo;
     SDL_Texture *imagem;
 } VariveisPause;
 
 typedef struct VariveisJogo
 {
-    int cor_fundo[3];
+    SDL_Color cor_fundo;
     int velocidade_jogador_x;
     int velocidade_jogador_y;
 } VariveisJogo;
+
+typedef struct VariveisConf
+{
+    SDL_Color cor_fundo;
+    Moldura moldura;
+    Botao botao_sair;
+    SDL_Texture *imagem;
+} VariveisConf;
 
 typedef struct TAMANHOS
 {
@@ -118,6 +124,7 @@ void CentralizarRectInRect(SDL_FRect *rect_pai, SDL_FRect *rect_filho);
 void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y);
 
 void ModuloEvento(VariveisGerais *geral);
+void InitGeral(VariveisGerais *geral, TAMANHOS *tamanhos);
 
 void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos);
 void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu);
@@ -127,8 +134,12 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos);
 void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause);
 void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause);
 
-void InitJogo(VariveisGerais *geral, VariveisJogo *jogo);
+void InitJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos);
 void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo);
 void CenaJogoDesenhar(VariveisGerais *geral, VariveisJogo *jogo);
+
+void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos);
+void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf);
+void CenaConfDesenhar(VariveisGerais *geral, VariveisConf *conf);
 
 #endif // GERAIS_H_INCLUDED

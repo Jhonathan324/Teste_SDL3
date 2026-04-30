@@ -30,7 +30,7 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
         InitBotao(geral->renderizador,
                   &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
-                  "Iniciar Jogo",
+                  "Continuar",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color){30, 30, 30, 255},
                    CENA_JOGO,
@@ -52,10 +52,10 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
         InitBotao(geral->renderizador,
                   &(SDL_FRect){0, 0, tamanhos.tamanho_botao_menu[0], tamanhos.tamanho_botao_menu[1]}, // retangulo base
                   "assets/images/ui/buttons/botão.png",
-                  "Sair do Jogo",
+                  "Menu Inicial",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color){30, 30, 30, 255},
-                  CENA_SAIR, fonte,
+                  CENA_MENU, fonte,
                   (SDL_Color){255, 255, 255, 255});
 
     // Necessario para alinhar os botões de forma mais pratica
@@ -86,6 +86,7 @@ void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause)
                 botoes[i]->timer--;
             else
             {
+                geral->cena_passada = geral->cena;
                 geral->cena = botoes[i]->indice;
                 botoes[i]->timer = 0;
             }
@@ -117,7 +118,7 @@ void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause)
         &pause->botao_conf,
         &pause->botao_sair};
     // limpeza de tela
-    SDL_SetRenderDrawColor(geral->renderizador, pause->cor_fundo[0], pause->cor_fundo[1], pause->cor_fundo[2], 255);
+    SDL_SetRenderDrawColor(geral->renderizador, pause->cor_fundo.r, pause->cor_fundo.g, pause->cor_fundo.b, pause->cor_fundo.a);
     SDL_RenderClear(geral->renderizador);
 
     // botões

@@ -32,9 +32,9 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
                   "Iniciar Jogo",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color){30, 30, 30, 255},
-                   CENA_JOGO,
-                   fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  CENA_JOGO,
+                  fonte,
+                  (SDL_Color){0, 0, 0, 255});
 
     menu->botao_conf =
         InitBotao(geral->renderizador,
@@ -45,7 +45,7 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
                   (SDL_Color){30, 30, 30, 255},
                   CENA_CONF,
                   fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  (SDL_Color){0, 0, 0, 255});
 
     menu->botao_sair =
         InitBotao(geral->renderizador,
@@ -55,7 +55,7 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color){30, 30, 30, 255},
                   CENA_SAIR, fonte,
-                  (SDL_Color){255, 255, 255, 255});
+                  (SDL_Color){0, 0, 0, 255});
 
     // Necessario para alinhar os botões de forma mais pratica
     SDL_FRect *retangulos[] = {
@@ -64,7 +64,7 @@ void InitMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
         &menu->botao_sair.retangulo};
     CentralizarRectsInRectV(&menu->moldura.retangulo, retangulos, 3, 0.1, 0.2);
 
-    //Calculo das partes dos botões para as imagens
+    // Calculo das partes dos botões para as imagens
     CalcularBotaoParte(&menu->botao_iniciar);
     CalcularBotaoParte(&menu->botao_conf);
     CalcularBotaoParte(&menu->botao_sair);
@@ -85,23 +85,22 @@ void CenaMenuLoop(VariveisGerais *geral, VariveisMenu *menu)
                 botoes[i]->timer--;
             else
             {
+                geral->cena_passada = geral->cena;
                 geral->cena = botoes[i]->indice;
                 botoes[i]->timer = 0;
             }
         }
+        // criar o retangulo para os calculos de colisão com o mause
         SDL_Rect retangulo_colisao;
         AtribuirFRectInRectA(&botoes[i]->retangulo, &retangulo_colisao);
-        if (SDL_PointInRect(&geral->ponto_mouse, &retangulo_colisao))
-            botoes[i]->sobre = true;
-        else
-        {
-            botoes[i]->sobre = false;
-        }
-
-        if (botoes[i]->sobre && geral->botao_mouse_direito)
-        {
-            botoes[i]->timer = 15;
-        }
+        
+        // Verifica se o mouse esta sobre o botão
+        if (SDL_PointInRect(&geral->ponto_mouse, &retangulo_colisao)) botoes[i]->sobre = true;
+        else botoes[i]->sobre = false;
+        
+        // Inicia o timer do botão se ele foi clicado
+        if (botoes[i]->sobre && geral->botao_mouse_direito) botoes[i]->timer = 15;
+        
     }
 
     SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
@@ -116,7 +115,7 @@ void CenaMenuDesenhar(VariveisGerais *geral, VariveisMenu *menu)
         &menu->botao_conf,
         &menu->botao_sair};
     // limpeza de tela
-    SDL_SetRenderDrawColor(geral->renderizador, menu->cor_fundo[0], menu->cor_fundo[1], menu->cor_fundo[2], 255);
+    SDL_SetRenderDrawColor(geral->renderizador, menu->cor_fundo.r, menu->cor_fundo.g, menu->cor_fundo.b, menu->cor_fundo.a);
     SDL_RenderClear(geral->renderizador);
 
     // botões

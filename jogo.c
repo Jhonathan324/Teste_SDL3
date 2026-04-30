@@ -57,7 +57,7 @@ void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo)
 void CenaJogoDesenhar(VariveisGerais *geral, VariveisJogo *jogo)
 {
     // Limpeza de Tela
-    SDL_SetRenderDrawColor(geral->renderizador, jogo->cor_fundo[0], jogo->cor_fundo[1], jogo->cor_fundo[2], 255);
+    SDL_SetRenderDrawColor(geral->renderizador, jogo->cor_fundo.r, jogo->cor_fundo.g, jogo->cor_fundo.b, jogo->cor_fundo.a);
     SDL_RenderClear(geral->renderizador);
 
     // player

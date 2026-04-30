@@ -7,28 +7,33 @@
 
 int main(void)
 {
-
+    //Ligando os mudulos
     SDL_Init(SDL_INIT_VIDEO);
     TTF_Init();
-    TAMANHOS tamanhos;
-    GetTamanhos(&tamanhos);
-    VariveisGerais geral = {SDL_CreateWindow("Teste", tamanhos.tamanho_tela[0], tamanhos.tamanho_tela[1], 0)}; // (640,360) resolução base. não pode ser menor;
-    geral.renderizador = SDL_CreateRenderer(geral.janela, NULL);
-    geral.cena = CENA_MENU;
-    geral.rodando = true;
-    geral.jogador = (Player){100, 3, (float)tamanhos.tamanho_bloco[0]/tamanhos.tamanho_jogador[0]*3, (SDL_FRect){100, 100, tamanhos.tamanho_jogador[0], tamanhos.tamanho_jogador[1]}};
 
-    VariveisMenu menu = {BRANCO}; // cor de fundo
+    //iniacilização de tudo
+    TAMANHOS tamanhos;
+    tamanhos.escala = 0;
+    VariveisGerais geral;
+    InitGeral(&geral,&tamanhos);
+
+    //iniciazação das variaveis da cena menu
+    VariveisMenu menu = {AZUL}; // cor de fundo
     InitMenu(&geral, &menu, tamanhos);
 
+    //iniciazação das variaveis da cena pause
     VariveisPause pause = {VERDE}; // cor de fundo
-    InitPause(&geral, &pause,tamanhos);
+    InitPause(&geral, &pause, tamanhos);
 
+    //iniciazação das variaveis da cena jogo
     VariveisJogo jogo = {
-        {30, 30, 200}, // cor de fundo
+        AZUL, // cor de fundo
         0,             // velocidade jogodaor em x
         0              // velocidade jogodaor em y
     };
+    //iniciazação das variaveis da cena da conf
+    VariveisConf conf;
+    InitConf(&geral, &conf, tamanhos);
 
     while (geral.rodando)
     {
@@ -55,6 +60,11 @@ int main(void)
         case (CENA_PAUSE):
             CenaPauseLoop(&geral, &pause);
             CenaPauseDesenhar(&geral, &pause);
+            break;
+
+        case (CENA_CONF):
+            CenaConfLoop(&geral, &conf);
+            CenaConfDesenhar(&geral, &conf);
             break;
 
         case (CENA_SAIR):
