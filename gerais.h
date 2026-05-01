@@ -11,7 +11,9 @@
 #define AZUL {20, 20, 25, 255}
 #define SEMI_PRETO {0, 0, 0, 128}
 #define EscalaMoldura 16
+#define EscalaMarcador 16
 #define EscalaBotao 8
+#define CantoFixo 48
 
 // enuns
 enum ESTADO_JOGO
@@ -25,6 +27,15 @@ enum ESTADO_JOGO
 };
 
 // elementos UI
+typedef struct CampoTexto{
+    SDL_FRect retangulo;
+    char *texto;
+    SDL_Color cor_fundo;
+    SDL_Texture *textura_texto;
+    SDL_Texture *fundo;
+} CampoTexto;
+
+
 typedef struct Moldura
 {
     SDL_FRect retangulo;
@@ -36,10 +47,10 @@ typedef struct Marcador{
     SDL_FRect retangulo;
     int timer;
     bool sobre;
+    bool ativo;
     SDL_Color cor1;
     SDL_Color cor2;
     SDL_Texture *imagem1;
-    SDL_Texture *imagem2;
     SDL_FRect partes[3][3];
 } Marcador;
 
@@ -140,10 +151,11 @@ typedef struct VariveisConf
     SDL_Color cor_fundo;
     Moldura moldura;
     Botao botao_sair;
-    Botao troca_fullscreen;
+    Marcador troca_fullscreen;
     BotaoExpansivo botao_reso;
     SDL_Texture *imagem;
     int reso_inicial;
+    bool valida_fullscrean;
 } VariveisConf;
 
 // Funções especificas
@@ -155,20 +167,26 @@ void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
 // Funções para ajustes dinamicos
 void CentralizarRectInRect(SDL_FRect *rect_pai, SDL_FRect *rect_filho);
 void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y);
-bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click);
 
 // Funções para criação de elementos dinamicos
-Moldura InitMoldura(SDL_Renderer *renderer, SDL_FRect *retangulo, char *file);
+CampoTexto InitTexto(SDL_Renderer *renderizador, SDL_FRect *retangulo, SDL_Color cor, char *texto, char *imagem);
+
+Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file);
 void CalcularMolduraPartes(Moldura *moldura, float tamanhos_canto);
-void DesenharMoldura(SDL_Renderer *renderer, Moldura moldura);
+void DesenharMoldura(SDL_Renderer *renderizador, Moldura moldura);
 
-Botao InitBotao(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte);
+Marcador InitMarcador(SDL_Renderer *renderizador, SDL_FRect *retangulo, bool ativo, char *imagem1, SDL_Color cor1, SDL_Color cor2);
+void DesenharMarcador(SDL_Renderer *renderizador, Marcador marcador);
+bool VerificarMarcador(Marcador *marcador, SDL_Point mouse, bool click);
+
+Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte);
 void CalcularBotaoPartes(Botao *botao);
-void DesenharBotao(SDL_Renderer *renderer, Botao botao);
+void DesenharBotao(SDL_Renderer *renderizador, Botao botao);
+bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click);
 
-BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderer, SDL_FRect *retangulo, char *imagem, char *texto, char *textos[], SDL_Color cor, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte, int n);
+BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, char *textos[], SDL_Color cor, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte, int n);
 void CalcularBotaoExpansivoPartes(BotaoExpansivo *botao);
-void DesenharBotaoExpansivo(SDL_Renderer *renderer, BotaoExpansivo botao);
+void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao);
 
 // Funções só pra tratamento de eventos
 void ModuloEvento(VariveisGerais *geral);

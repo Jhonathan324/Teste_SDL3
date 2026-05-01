@@ -43,6 +43,17 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->botao_sair.retangulo.x -= conf->botao_sair.retangulo.w;
     CalcularBotaoPartes(&conf->botao_sair);
 
+    conf->troca_fullscreen = InitMarcador(geral->renderizador ,&(SDL_FRect){
+        conf->moldura.retangulo.x + conf->moldura.retangulo.w - tamanhos.tamanho_botao1[1] - CantoFixo,
+        conf->moldura.retangulo.y + CantoFixo,
+        tamanhos.tamanho_botao1[1],
+        tamanhos.tamanho_botao1[1]},
+        geral->fullscrean,
+        "assets/images/ui/buttons/marcador.png",
+        (SDL_Color)PRETO,
+        (SDL_Color)BRANCO
+    );
+
     char resolucao_atual[11];
     sprintf(resolucao_atual,"(%d, %d)",geral->resolucao_atual[0],geral->resolucao_atual[1]);
     char *textos[] = {
@@ -57,8 +68,8 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->botao_reso = 
     InitBotaoExpansivo(geral->renderizador,
         &(SDL_FRect){
-            conf->moldura.retangulo.x + 48,
-            conf->moldura.retangulo.y + 48,
+            conf->moldura.retangulo.x + CantoFixo,
+            conf->moldura.retangulo.y + CantoFixo,
             tamanhos.tamanho_botao1[0],
             tamanhos.tamanho_botao1[1]}, // retangulo base
         "assets/images/ui/buttons/botão.png",
@@ -89,11 +100,19 @@ void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
         int temp = geral->cena;
         geral->cena = geral->cena_passada;
         geral->cena_passada=temp;
-        if(conf->reso_inicial != tamanhos->escala) {
+        if(conf->reso_inicial != tamanhos->escala || conf->valida_fullscrean!=geral->fullscrean) {
+            conf->valida_fullscrean = geral->fullscrean;
             conf->reso_inicial = tamanhos->escala;
             geral->troca_reso = true;
         }
     }
+
+    if(VerificarMarcador(&conf->troca_fullscreen,geral->ponto_mouse, geral->botao_mouse_direito)){
+        geral->fullscrean = !geral->fullscrean;
+        CalcularGeral(geral, tamanhos);
+        InitConf(geral, conf, *tamanhos);
+    }
+
     if(VerificarBotao(botoes[1],geral->ponto_mouse,geral->botao_mouse_direito)){
         conf->botao_reso.expandido = !conf->botao_reso.expandido;
     }
@@ -128,4 +147,5 @@ void CenaConfDesenhar(VariveisGerais *geral, VariveisConf *conf)
         DesenharBotao(geral->renderizador, *botoes[i]);
     
     DesenharBotaoExpansivo(geral->renderizador, conf->botao_reso);
+    DesenharMarcador(geral->renderizador,conf->troca_fullscreen);
 }

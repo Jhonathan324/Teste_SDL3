@@ -86,36 +86,6 @@ void CentralizarRectInRect(SDL_FRect *pai, SDL_FRect *filho)
     filho->y = pai->y + (pai->h - filho->h) / 2;
 }
 
-bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click)
-{
-    if (botao->timer)
-    {
-        if (botao->timer > 1)
-            botao->timer--;
-
-        else
-        {
-            botao->timer = 0;
-            return true;
-        }
-    }
-
-    // Cria um retangulo para verificar as colisões como o mouse
-    SDL_Rect retangulo_colisao;
-    AtribuirFRectInRectA(&botao->retangulo, &retangulo_colisao);
-
-    // verifica se o mouse está emcima do botão
-    if (SDL_PointInRect(&mouse, &retangulo_colisao))
-        botao->sobre = true;
-    else
-        botao->sobre = false;
-
-    // verifica se o botão de sair foi clicado
-    if (botao->sobre && click)
-        botao->timer = 15;
-
-    return false;
-}
 
 void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y)
 {
@@ -139,6 +109,8 @@ void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float bo
         }
     }
 }
+
+
 
 Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file)
 {
@@ -184,19 +156,62 @@ void DesenharMoldura(SDL_Renderer *renderizador, Moldura moldura)
                 &moldura.partes[i][j]);
 }
 
-Marcador InitMarcador(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem1, char *imagem2, SDL_Color cor1, SDL_Color cor2){
+Marcador InitMarcador(SDL_Renderer *renderizador, SDL_FRect *retangulo, bool ativo, char *imagem1, SDL_Color cor1, SDL_Color cor2){
     Marcador marcador = {
         *retangulo,
         0,
         false,
+        ativo,
         cor1,
         cor2,
-        IMG_LoadTexture(renderizador, imagem1),
-        IMG_LoadTexture(renderizador, imagem2)
+        IMG_LoadTexture(renderizador, imagem1)
     };
     SDL_SetTextureScaleMode(marcador.imagem1 , SDL_SCALEMODE_NEAREST);
-    SDL_SetTextureScaleMode(marcador.imagem2 , SDL_SCALEMODE_NEAREST);
     return marcador;
+}
+
+bool VerificarMarcador(Marcador *marcador, SDL_Point mouse, bool click){
+    if (marcador->timer)
+    {
+        if (marcador->timer > 1)
+            marcador->timer--;
+
+        else
+        {
+            marcador->timer = 0;
+            marcador->ativo = !marcador->ativo;
+            return true;
+        }
+    }
+
+    // Cria um retangulo para verificar as colisões como o mouse
+    SDL_Rect retangulo_colisao;
+    AtribuirFRectInRectA(&marcador->retangulo, &retangulo_colisao);
+
+    // verifica se o mouse está emcima do botão
+    if (SDL_PointInRect(&mouse, &retangulo_colisao))
+        marcador->sobre = true;
+    else
+        marcador->sobre = false;
+
+    // verifica se o botão de sair foi clicado
+    if (marcador->sobre && click)
+        marcador->timer = 15;
+
+    return false;
+}
+
+void DesenharMarcador(SDL_Renderer *renderizador, Marcador marcador){
+    if(marcador.ativo) SDL_RenderTexture(renderizador, marcador.imagem1, &(SDL_FRect){EscalaMarcador ,0,EscalaMarcador ,EscalaMarcador }, &marcador.retangulo);
+    else SDL_RenderTexture(renderizador, marcador.imagem1, &(SDL_FRect){0,0,EscalaMarcador ,EscalaMarcador }, &marcador.retangulo);
+    if(marcador.sobre){
+        SDL_SetRenderDrawBlendMode(
+                renderizador,
+                SDL_BLENDMODE_BLEND
+            );
+            SDL_SetRenderDrawColor(renderizador, marcador.cor2.r, marcador.cor2.g, marcador.cor2.b, marcador.cor2.a);
+            SDL_RenderFillRect(renderizador, &marcador.retangulo);
+    }
 }
 
 Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte)
@@ -309,6 +324,37 @@ void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
         retangulo_texto.y = (botao.retangulo.y + (botao.retangulo.h - retangulo_texto.h) / 2);
         SDL_RenderTexture(renderizador, botao.textura, NULL, &retangulo_texto);
     }
+}
+
+bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click)
+{
+    if (botao->timer)
+    {
+        if (botao->timer > 1)
+            botao->timer--;
+
+        else
+        {
+            botao->timer = 0;
+            return true;
+        }
+    }
+
+    // Cria um retangulo para verificar as colisões como o mouse
+    SDL_Rect retangulo_colisao;
+    AtribuirFRectInRectA(&botao->retangulo, &retangulo_colisao);
+
+    // verifica se o mouse está emcima do botão
+    if (SDL_PointInRect(&mouse, &retangulo_colisao))
+        botao->sobre = true;
+    else
+        botao->sobre = false;
+
+    // verifica se o botão de sair foi clicado
+    if (botao->sobre && click)
+        botao->timer = 15;
+
+    return false;
 }
 
 BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, char *textos[], SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte, int n)
