@@ -1,9 +1,6 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
-#include "gerais.h"
+#include "jogo.h"
 
 int main(void)
 {
@@ -26,11 +23,8 @@ int main(void)
     InitPause(&geral, &pause, tamanhos);
 
     //iniciazação das variaveis da cena jogo
-    VariveisJogo jogo = {
-        AZUL, // cor de fundo
-        0,             // velocidade jogodaor em x
-        0              // velocidade jogodaor em y
-    };
+    VariveisJogo jogo;
+    InitJogo(&geral, &jogo, tamanhos);
     //iniciazação das variaveis da cena da conf
     VariveisConf conf;
     InitConf(&geral, &conf, tamanhos);
@@ -64,7 +58,7 @@ int main(void)
 
         case (CENA_CONF):
             CenaConfLoop(&geral, &conf, &tamanhos);
-            CenaConfDesenhar(&geral, &conf);
+            CenaConfDesenhar(geral, conf);
             break;
 
         case (CENA_SAIR):

@@ -1,9 +1,26 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include "gerais.h"
+#include "jogo.h"
+
+
+
+void InitJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos){
+    geral->jogador = geral->jogador = (Player){100,
+         3,
+        (float)tamanhos.tamanho_bloco[0]/tamanhos.tamanho_jogador[0]*3,
+        (SDL_FRect){100, 100, tamanhos.tamanho_jogador[0], tamanhos.tamanho_jogador[1]}};
+
+    jogo->cor_fundo = (SDL_Color)AZUL;
+    jogo->velocidade_jogador_x = 0;
+    jogo->velocidade_jogador_y = 0;
+    memset(jogo->mapa,1,sizeof(jogo->mapa));
+
+    for(int i = 0; i < TamanhosMapaX; i++) printf("%d", jogo->mapa[i][0]);
+
+
+
+}
 
 void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo)
 {

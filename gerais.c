@@ -1,6 +1,3 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -58,13 +55,13 @@ void GetTamanhos(TAMANHOS *tamanhos)
 
     tamanhos->tamanho_botao1[0] = tamanhos->tamanho_tela[0] * (float)24 / 640;
     tamanhos->tamanho_botao1[1] = tamanhos->tamanho_tela[1] * (float)24 / 360;
-    
+
     tamanhos->tamanho_bloco[0]      = tamanhos->tamanho_tela[0] * (float)64 / 640;
     tamanhos->tamanho_bloco[1]      = tamanhos->tamanho_tela[1] * (float)64 / 360;
 
     tamanhos->tamanho_jogador[0]    = tamanhos->tamanho_tela[0] * (float)36 / 640;
     tamanhos->tamanho_jogador[1]    = tamanhos->tamanho_tela[1] * (float)36 / 360;
-    
+
     tamanhos->tamanho_inimigo1[0]   = tamanhos->tamanho_tela[0] * (float)36 / 640;
     tamanhos->tamanho_inimigo1[1]   = tamanhos->tamanho_tela[1] * (float)36 / 360;
 
@@ -110,7 +107,56 @@ void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float bo
     }
 }
 
+CampoTexto InitTexto(SDL_Renderer *renderizador, SDL_FRect *retangulo, SDL_Color cor_fundo, char *texto, char *imagem, TTF_Font *fonte, SDL_Color cor_fonte, bool alinhado){
+    int x,y;
+    float proporcao = 0;
+    TTF_GetStringSize(fonte, texto, 0, &x, &y);
+    proporcao = (float)x/y;
+    if(!alinhado){
+        retangulo->w = retangulo->h * proporcao;
+        proporcao=0;
+    }
+    CampoTexto campo_texto = {
+        *retangulo,
+        texto,
+        cor_fundo,
+        SDL_CreateTextureFromSurface(renderizador,TTF_RenderText_Solid(fonte,texto,0,cor_fonte)),
+        IMG_LoadTexture(renderizador, imagem),
+        proporcao
+    };
+    SDL_SetTextureScaleMode(campo_texto.imagem, SDL_SCALEMODE_NEAREST);
+    return campo_texto;
+}
 
+void DesenharTexto(SDL_Renderer *renderizador, CampoTexto texto){
+    if(texto.cor_fundo.a){
+        SDL_SetRenderDrawBlendMode(renderizador,SDL_BLENDMODE_BLEND);
+        SDL_SetRenderDrawColor(renderizador,texto.cor_fundo.r,texto.cor_fundo.g,texto.cor_fundo.b,texto.cor_fundo.a);
+        SDL_RenderFillRect(renderizador, &texto.retangulo);
+    }
+    if(texto.imagem){
+        SDL_RenderTexture(renderizador, texto.imagem, NULL, &texto.retangulo);
+    }
+    if(texto.textura_texto){
+
+        if(texto.proporcao){
+            SDL_FRect retangulo_texto = texto.retangulo;
+            retangulo_texto.w = texto.retangulo.h * texto.proporcao * 0.8;
+            retangulo_texto.x += (texto.retangulo.w-retangulo_texto.w)/2;
+            retangulo_texto.h = texto.retangulo.h * 0.8;
+            retangulo_texto.y += (texto.retangulo.h-retangulo_texto.h)/2;
+            SDL_RenderTexture(renderizador, texto.textura_texto, NULL, &retangulo_texto);
+        }
+        else{
+            SDL_FRect retangulo_texto = texto.retangulo;
+            retangulo_texto.w = texto.retangulo.w * 0.8;
+            retangulo_texto.x += (texto.retangulo.w-retangulo_texto.w)/2;
+            retangulo_texto.h = texto.retangulo.h * 0.8;
+            retangulo_texto.y += (texto.retangulo.h-retangulo_texto.h)/2;
+            SDL_RenderTexture(renderizador, texto.textura_texto, NULL, &retangulo_texto);
+        }
+    }
+}
 
 Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file)
 {
@@ -307,10 +353,7 @@ void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
                 &botao.retangulo);
 
         if(botao.sobre){
-            SDL_SetRenderDrawBlendMode(
-                renderizador,
-                SDL_BLENDMODE_BLEND
-            );
+            SDL_SetRenderDrawBlendMode(renderizador,SDL_BLENDMODE_BLEND);
             SDL_SetRenderDrawColor(renderizador, botao.cor2.r, botao.cor2.g, botao.cor2.b, botao.cor2.a);
             SDL_RenderFillRect(renderizador, &botao.retangulo);
         }
@@ -489,7 +532,7 @@ void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
         SDL_SetRenderDrawColor(renderizador, botao.botao_pai.cor2.r, botao.botao_pai.cor2.g, botao.botao_pai.cor2.b, botao.botao_pai.cor2.a);
         SDL_RenderFillRect(renderizador, &botao.botao_pai.retangulo);
     }
-    
+
 
     if (botao.botao_pai.textura)
     {
@@ -542,7 +585,7 @@ void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
             SDL_RenderFillRect(renderizador, &botao.botao_filho[i1].retangulo);
         }
         }
-        
+
         if (botao.botao_filho[i1].textura)
         {
             SDL_FRect retangulo_texto = botao.botao_filho[i1].retangulo;

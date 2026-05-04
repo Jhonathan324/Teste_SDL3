@@ -1,6 +1,3 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include "gerais.h"
@@ -24,14 +21,41 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     CentralizarRectInRect(&rect_janela, &rect_moldura);
 
     conf->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&conf->moldura, 48);
+    CalcularMolduraPartes(&conf->moldura, CantoFixo);
+
+    //Textos
+    conf->texto_reso = InitTexto(geral->renderizador, 
+        &(SDL_FRect){conf->moldura.retangulo.x + CantoFixo - 12,
+            conf->moldura.retangulo.y + CantoFixo,
+            tamanhos.tamanho_botao1[0],
+            tamanhos.tamanho_botao1[1]},
+        (SDL_Color){0,0,0,0},
+        "Resolução",
+        NULL,
+        fonte,
+        (SDL_Color)PRETO,
+        false
+    );
+    conf->texto_full = InitTexto(geral->renderizador, 
+        &(SDL_FRect){0,
+            conf->moldura.retangulo.y+ CantoFixo,
+            tamanhos.tamanho_botao1[0],
+            tamanhos.tamanho_botao1[1]},
+        (SDL_Color){0,0,0,0},
+        "Tela Cheia",
+        NULL,
+        fonte,
+        (SDL_Color)PRETO,
+        false
+    );
+    conf->texto_full.retangulo.x = conf->moldura.retangulo.x + conf->moldura.retangulo.w - conf->texto_full.retangulo.w - CantoFixo*((float)2/3);
 
     // Botão para sair das configurações
     conf->botao_sair =
     InitBotao(geral->renderizador,
         &(SDL_FRect){
-            conf->moldura.retangulo.x + conf->moldura.retangulo.w - 20,
-            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.tamanho_botao1[1] - 20,
+            conf->moldura.retangulo.x + conf->moldura.retangulo.w - CantoFixo/2,
+            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.tamanho_botao1[1] - CantoFixo/2,
             tamanhos.tamanho_botao1[0],
             tamanhos.tamanho_botao1[1]}, // retangulo base
         "assets/images/ui/buttons/botão.png",
@@ -44,8 +68,8 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     CalcularBotaoPartes(&conf->botao_sair);
 
     conf->troca_fullscreen = InitMarcador(geral->renderizador ,&(SDL_FRect){
-        conf->moldura.retangulo.x + conf->moldura.retangulo.w - tamanhos.tamanho_botao1[1] - CantoFixo,
-        conf->moldura.retangulo.y + CantoFixo,
+        conf->texto_full.retangulo.x+CantoFixo*((float)1/3),
+        conf->texto_full.retangulo.y + conf->texto_full.retangulo.h ,
         tamanhos.tamanho_botao1[1],
         tamanhos.tamanho_botao1[1]},
         geral->fullscrean,
@@ -69,7 +93,7 @@ void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     InitBotaoExpansivo(geral->renderizador,
         &(SDL_FRect){
             conf->moldura.retangulo.x + CantoFixo,
-            conf->moldura.retangulo.y + CantoFixo,
+            conf->texto_reso.retangulo.y + conf->texto_reso.retangulo.h ,
             tamanhos.tamanho_botao1[0],
             tamanhos.tamanho_botao1[1]}, // retangulo base
         "assets/images/ui/buttons/botão.png",
@@ -131,21 +155,21 @@ void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
     
 }
 
-void CenaConfDesenhar(VariveisGerais *geral, VariveisConf *conf)
+void CenaConfDesenhar(VariveisGerais geral, VariveisConf conf)
 {
     // isso vai ser pratico mais para frente - eu sei disso -
-    Botao *botoes[] = {
-        &conf->botao_sair};
+    Botao *botoes[] = {&conf.botao_sair};
 
     // limpeza de tela
     // SDL_SetRenderDrawColor(geral->renderizador, conf->cor_fundo.r, conf->cor_fundo.g, conf->cor_fundo.b, conf->cor_fundo.a);
     // SDL_RenderClear(geral->renderizador);
 
     // botões
-    DesenharMoldura(geral->renderizador, conf->moldura);
+    DesenharMoldura(geral.renderizador, conf.moldura);
+    DesenharTexto(geral.renderizador, conf.texto_reso);
+    DesenharTexto(geral.renderizador, conf.texto_full);
     for (int i = 0; i < 1; i++)
-        DesenharBotao(geral->renderizador, *botoes[i]);
-    
-    DesenharBotaoExpansivo(geral->renderizador, conf->botao_reso);
-    DesenharMarcador(geral->renderizador,conf->troca_fullscreen);
+        DesenharBotao(geral.renderizador, *botoes[i]);
+    DesenharBotaoExpansivo(geral.renderizador, conf.botao_reso);
+    DesenharMarcador(geral.renderizador,conf.troca_fullscreen);
 }

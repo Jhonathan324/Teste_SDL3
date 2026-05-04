@@ -1,6 +1,3 @@
-#include <SDL3/SDL.h>
-#include <SDL3/SDL_ttf.h>
-#include <SDL3_image/SDL_image.h>
 #include <stdio.h>
 #include <stdbool.h>
 #include "gerais.h"
@@ -13,7 +10,7 @@ void InitGeral(VariveisGerais *geral, TAMANHOS *tamanhos){
     geral->rodando = true;
     geral->cena = CENA_MENU;
     geral->renderizador = SDL_CreateRenderer(geral->janela, NULL);
-    geral->jogador = (Player){100, 3, (float)tamanhos->tamanho_bloco[0]/tamanhos->tamanho_jogador[0]*3, (SDL_FRect){100, 100, tamanhos->tamanho_jogador[0], tamanhos->tamanho_jogador[1]}};
+    //geral->jogador = (Player){100, 3, (float)tamanhos->tamanho_bloco[0]/tamanhos->tamanho_jogador[0]*3, (SDL_FRect){100, 100, tamanhos->tamanho_jogador[0], tamanhos->tamanho_jogador[1]}};
     geral->resolucao_atual[0] = tamanhos->tamanho_tela[0];
     geral->resolucao_atual[1] = tamanhos->tamanho_tela[1];
     geral->troca_reso = false;

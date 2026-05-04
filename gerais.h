@@ -1,6 +1,8 @@
 #ifndef GERAIS_H_INCLUDED
 #define GERAIS_H_INCLUDED
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_ttf.h>
+#include <SDL3_image/SDL_image.h>
 
 #define CORCORFUNDO {20, 20, 20, 255}
 #define COR1 {20, 20, 20, 255}
@@ -32,7 +34,8 @@ typedef struct CampoTexto{
     char *texto;
     SDL_Color cor_fundo;
     SDL_Texture *textura_texto;
-    SDL_Texture *fundo;
+    SDL_Texture *imagem;
+    float proporcao;
 } CampoTexto;
 
 
@@ -139,12 +142,7 @@ typedef struct VariveisPause
     SDL_Texture *imagem;
 } VariveisPause;
 
-typedef struct VariveisJogo
-{
-    SDL_Color cor_fundo;
-    int velocidade_jogador_x;
-    int velocidade_jogador_y;
-} VariveisJogo;
+
 
 typedef struct VariveisConf
 {
@@ -156,6 +154,8 @@ typedef struct VariveisConf
     SDL_Texture *imagem;
     int reso_inicial;
     bool valida_fullscrean;
+    CampoTexto texto_reso;
+    CampoTexto texto_full;
 } VariveisConf;
 
 // Funções especificas
@@ -169,7 +169,8 @@ void CentralizarRectInRect(SDL_FRect *rect_pai, SDL_FRect *rect_filho);
 void CentralizarRectsInRectV(SDL_FRect *pai, SDL_FRect *filho[], int n, float borda_x, float borda_y);
 
 // Funções para criação de elementos dinamicos
-CampoTexto InitTexto(SDL_Renderer *renderizador, SDL_FRect *retangulo, SDL_Color cor, char *texto, char *imagem);
+CampoTexto InitTexto(SDL_Renderer *renderizador, SDL_FRect *retangulo, SDL_Color cor_fundo, char *texto, char *imagem, TTF_Font *fonte, SDL_Color cor_fonte, bool alinhado);
+void DesenharTexto(SDL_Renderer *renderizador, CampoTexto texto);
 
 Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file);
 void CalcularMolduraPartes(Moldura *moldura, float tamanhos_canto);
@@ -202,12 +203,8 @@ void InitPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos);
 void CenaPauseLoop(VariveisGerais *geral, VariveisPause *pause);
 void CenaPauseDesenhar(VariveisGerais *geral, VariveisPause *pause);
 
-void InitJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos);
-void CenaJogoLoop(VariveisGerais *geral, VariveisJogo *jogo);
-void CenaJogoDesenhar(VariveisGerais *geral, VariveisJogo *jogo);
-
 void InitConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos);
 void CenaConfLoop(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos);
-void CenaConfDesenhar(VariveisGerais *geral, VariveisConf *conf);
+void CenaConfDesenhar(VariveisGerais geral, VariveisConf conf);
 
 #endif // GERAIS_H_INCLUDED
