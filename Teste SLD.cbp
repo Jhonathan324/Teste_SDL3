@@ -36,13 +36,20 @@
 			<Add library="SDL3_image" />
 			<Add library="SDL3_ttf" />
 		</Linker>
+		<Unit filename="conf.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="gerais.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="gerais.h" />
+		<Unit filename="geral.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="jogo.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="jogo.h" />
 		<Unit filename="main.c">
 			<Option compilerVar="CC" />
 		</Unit>
