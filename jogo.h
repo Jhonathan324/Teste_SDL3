@@ -176,8 +176,8 @@ void DesenharMapa(SDL_Renderer *renderizador, Mapa mapa, Camera camera, int tama
 SDL_FRect MapaTiles(int n);
 
 PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img);
-void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame);
-void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player);
+void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame, Camera *camera);
+void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera camera);
 
 
 TiposVMMA CalcularTipoVMMA(int n);

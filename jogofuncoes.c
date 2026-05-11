@@ -32,7 +32,7 @@ PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL
 	return player;
 }
 
-void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame){
+void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame, Camera *camera){
 	double movi_v = true, movi_h = 0;
 	player->frame += delta_frame;
 
@@ -102,16 +102,16 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 	player->retangulo_coli_v.y = player->posicao_y;
 
 
-	player->retangulo_img.y = player->retangulo_coli.y + player->retangulo_coli.h-player->retangulo_img.h;
-	player->retangulo_img.x = player->retangulo_coli.x -  (player->retangulo_img.w * ((float)44/MedidaImgPlayerX)) - (player->costas)*(player->retangulo_img.w * ((float)11/MedidaImgPlayerX)); 
+	player->retangulo_img.y = player->retangulo_coli.y + player->retangulo_coli.h-player->retangulo_img.h + camera->y;
+	player->retangulo_img.x = player->retangulo_coli.x -  (player->retangulo_img.w * ((float)44/MedidaImgPlayerX)) - (player->costas)*(player->retangulo_img.w * ((float)11/MedidaImgPlayerX)) - camera->x; 
 }
 
-void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player){
+void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera camera ){
 	// se tiver em teste eu não comento
 	SDL_SetRenderDrawColor(renderizador, 255, 0, 0, 255);
 	SDL_RenderFillRect(renderizador, &(SDL_FRect){
-		player.retangulo_coli.x,
-		player.retangulo_coli.y,
+		player.retangulo_coli.x-camera.x,
+		player.retangulo_coli.y-camera.y,
 		player.retangulo_coli.w,
 		player.retangulo_coli.h});
 
@@ -158,7 +158,7 @@ void ColisaoPlayerMapa(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], i
 
 void DesenharMapa(SDL_Renderer *renderizador, Mapa mapa, Camera camera, int tamanho_bloco[2], int tamanho_tela[2]){
 	for(int i = camera.y/tamanho_bloco[1] ; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y - 50; i++){
-		for(int j = camera.x/tamanho_bloco[0] ; j*tamanho_bloco[0] < tamanho_tela[0]+ camera.x- 50; j++){
+		for(int j = camera.x/tamanho_bloco[0] ; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x- 50; j++){
 			if(mapa.tiles[i][j]){ 
 				SDL_FRect src = MapaTiles(mapa.tiles[i][j]);
 				SDL_RenderTexture(renderizador, mapa.textura, &src , &(SDL_FRect){j*tamanho_bloco[0] - camera.x, i*tamanho_bloco[1] - camera.y, tamanho_bloco[0],tamanho_bloco[1]});

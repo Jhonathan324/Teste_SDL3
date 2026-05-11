@@ -73,9 +73,9 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t)
 
     //player
     //if(jogo->jogador.retangulo_coli.x > geral->resolucao_atual[0]*0.8) jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]*0.8;
-    jogo->camera.x = jogo->jogador.retangulo_coli.x;
+    jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]/2;
     ColisaoPlayerMapa(&jogo->jogador, jogo->mapa, jogo->tamanho_bloco, geral->resolucao_atual);
-    CalcularPlayer(teclado, &jogo->jogador, delta_t*100);
+    CalcularPlayer(teclado, &jogo->jogador, delta_t*100, &jogo->camera);
 }
 
 void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo)
@@ -86,7 +86,7 @@ void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo)
 
     // Elementos
     DesenharMapa(geral.renderizador, jogo.mapa, jogo.camera, jogo.tamanho_bloco, geral.resolucao_atual);
-    DesenharPlayer(geral.renderizador, jogo.jogador);
+    DesenharPlayer(geral.renderizador, jogo.jogador, jogo.camera);
 
 
 }
