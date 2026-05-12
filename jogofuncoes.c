@@ -43,19 +43,10 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 	if(movi_h<0) player->costas = true;
 	if(movi_h>0) player->costas = false;
 
-	
-
-
 	if(!movi_h) player->velocidade_x = 0;
 
-	
-
-	
-
 	// É necessario divirdir em dois para não ser possivel bugar nas quinas do blocos
-	
-
-	ColisaoPlayerMapaV(player, mapa, tamanho_bloco, tamanhos_tela);
+	ColisaoPlayerMapaV(player, mapa, tamanho_bloco, tamanhos_tela, *camera);
 	if(player->coli_v){
 		movi_v = false;
 		player->velocidade_y = false;
@@ -66,15 +57,17 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 	player->retangulo_coli_v = player->retangulo_coli;
 	player->retangulo_coli_h.y = player->retangulo_coli_v.y;
 	
-	ColisaoPlayerMapaH(player, mapa, tamanho_bloco, tamanhos_tela);
+	ColisaoPlayerMapaH(player, mapa, tamanho_bloco, tamanhos_tela, *camera);
 	if(player->coli_h){
-		movi_h = false;
 		player->velocidade_x = false;
 		player->retangulo_coli_h = player->retangulo_coli;
 		player->posicao_x = player->retangulo_coli.x;
 	}
-	
-	player->velocidade_x += player->acelera * delta_frame * movi_h;
+	else player->velocidade_x += player->acelera * delta_frame * movi_h;
+	player->retangulo_coli.x = player->retangulo_coli_h.x;
+	player->retangulo_coli_h = player->retangulo_coli;
+	player->retangulo_coli_v.x = player->retangulo_coli.x;
+
 	if(!player->coli_v) {
 		if(player->pulo) {
 			if(player->estado_atual != VMM_PLAYER_PULAR && player->estado_atual != VMM_PLAYER_PULO_TRANSICAO && player->estado_atual != VMM_PLAYER_CAIR){
@@ -123,8 +116,7 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 	}
 	
 
-	player->retangulo_coli.x = player->retangulo_coli_h.x;
-	player->retangulo_coli_h = player->retangulo_coli;
+	
 
 	// vericando para a velocidade não passar do maximo
 	if (player->velocidade_x < player->vel_max_x*-1)
@@ -140,6 +132,7 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 		player->velocidade_y = player->vel_max_y;
 
 	//printf("%d\n",player->retangulo_coli_h.x);
+	
 	player->posicao_x += player->velocidade_x * delta_frame;
 	player->posicao_y += player->velocidade_y * delta_frame;
 
@@ -179,9 +172,9 @@ void DesenharBloco(SDL_Renderer *renderizador, Bloco bloco){
 
 }
 
-void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2]){
-	for(int i = 0 ; i*tamanho_bloco[1] < tamanho_tela[1]; i++){
-		for(int j = 0; j*tamanho_bloco[0] < tamanho_tela[0]; j++){
+void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera){
+	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y && i < TamanhosMapaY; i++){
+		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x && j < TamanhosMapaX; j++){
 			if(mapa.tiles[i][j]){ 
 				TiposVMMA tipo_de_coli = CalcularTipoVMMA(mapa.tiles[i][j]);
 				switch (tipo_de_coli){
@@ -199,9 +192,9 @@ void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], 
 	}
 }
 
-void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2]){
-	for(int i = 0 ; i*tamanho_bloco[1] < tamanho_tela[1]; i++){
-		for(int j = 0; j*tamanho_bloco[0] < tamanho_tela[0]; j++){
+void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera){
+	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y && i < TamanhosMapaY; i++){
+		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x && j < TamanhosMapaX; j++){
 			if(mapa.tiles[i][j]){ 
 				TiposVMMA tipo_de_coli = CalcularTipoVMMA(mapa.tiles[i][j]);
 				switch (tipo_de_coli){
@@ -220,8 +213,8 @@ void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], 
 
 
 void DesenharMapa(SDL_Renderer *renderizador, Mapa mapa, Camera camera, int tamanho_bloco[2], int tamanho_tela[2]){
-	for(int i = camera.y/tamanho_bloco[1] ; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y - 50; i++){
-		for(int j = camera.x/tamanho_bloco[0] ; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x- 50; j++){
+	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y && i < TamanhosMapaY; i++){
+		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x && j < TamanhosMapaX; j++){
 			if(mapa.tiles[i][j]){ 
 				SDL_FRect src = MapaTiles(mapa.tiles[i][j]);
 				SDL_RenderTexture(renderizador, mapa.textura, &src , &(SDL_FRect){j*tamanho_bloco[0] - camera.x, i*tamanho_bloco[1] - camera.y, tamanho_bloco[0],tamanho_bloco[1]});

@@ -22,7 +22,6 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos){
     );
 
     // Variaveis do Jogo
-    jogo->cor_fundo = (SDL_Color)AZUL;
     jogo->tempo = 0;
     jogo->camera.x = 0;
     jogo->camera.y = 0;
@@ -51,10 +50,10 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos){
 
 void CalcularCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos){
     // Player
-    float tela_antiga_x = jogo->jogador.retangulo_img.w / ((float)MedidaImgPlayerX / 640); 
-    float tela_antiga_y = jogo->jogador.retangulo_img.h / ((float)MedidaImgPlayerY / 360);  
-    float x = tamanhos.tamanho_tela[0] * ( (double)jogo->jogador.retangulo_coli.x/tela_antiga_x );
-    float y = tamanhos.tamanho_tela[1] * ( (double)jogo->jogador.retangulo_coli.y/tela_antiga_y );
+    double tela_antiga_x = jogo->jogador.retangulo_img.w / ((double)MedidaImgPlayerX / 640); 
+    double tela_antiga_y = jogo->jogador.retangulo_img.h / ((double)MedidaImgPlayerY / 360);  
+    double x = tamanhos.tamanho_tela[0] * ( (double)jogo->jogador.retangulo_coli.x/tela_antiga_x );
+    double y = tamanhos.tamanho_tela[1] * ( (double)jogo->jogador.retangulo_coli.y/tela_antiga_y );
     jogo->jogador = InitPlayer(
         geral->renderizador, 
         (SDL_FRect){x,y,tamanhos.tamanho_jogador[0],tamanhos.tamanho_jogador[1]},
@@ -75,9 +74,12 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t)
         geral->cena = CENA_PAUSE;
 
     //player
-    //if(jogo->jogador.retangulo_coli.x > geral->resolucao_atual[0]*0.8) jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]*0.8;
-    jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]/2;
-    jogo->camera.y = jogo->jogador.retangulo_coli.y - geral->resolucao_atual[1]/2;
+    if(-jogo->camera.x+jogo->jogador.retangulo_coli.x + jogo->jogador.retangulo_coli.w > geral->resolucao_atual[0]*0.6) jogo->camera.x = jogo->jogador.retangulo_coli.x  + jogo->jogador.retangulo_coli.w - geral->resolucao_atual[0]*0.6;
+    else if(-jogo->camera.x+jogo->jogador.retangulo_coli.x  < geral->resolucao_atual[0]*0.4) jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]*0.4;
+    if(-jogo->camera.y+jogo->jogador.retangulo_coli.y + jogo->jogador.retangulo_coli.h > geral->resolucao_atual[1]*0.7) jogo->camera.y = jogo->jogador.retangulo_coli.y  + jogo->jogador.retangulo_coli.h - geral->resolucao_atual[1]*0.7;
+    else if(-jogo->camera.y+jogo->jogador.retangulo_coli.y  < geral->resolucao_atual[1]*0.3) jogo->camera.y = jogo->jogador.retangulo_coli.y - geral->resolucao_atual[1]*0.3;
+    if(jogo->camera.x<0)jogo->camera.x=0;
+    if(jogo->camera.y<0)jogo->camera.y=0;
     CalcularPlayer(teclado, &jogo->jogador, delta_t*100, &jogo->camera, jogo->mapa, jogo->tamanho_bloco, geral->resolucao_atual);
 }
 

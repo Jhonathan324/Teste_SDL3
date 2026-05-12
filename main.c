@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdbool.h>
-#include "jogo.h"
+#include "mapa.h"
 
 int main(void)
 {
@@ -10,7 +10,7 @@ int main(void)
 
     //iniacilização de tudo
     TAMANHOS tamanhos;
-    tamanhos.escala = 0;
+    tamanhos.escala = 2;
     VariveisGerais geral;
     InitCenaGeral(&geral, &tamanhos);
 
@@ -23,15 +23,25 @@ int main(void)
     InitCenaPause(&geral, &pause, tamanhos);
 
     //iniciazação das variaveis da cena jogo
-    VariveisJogo jogo;
+    VariveisJogo jogo = {AZUL_CLARO};
     InitCenaJogo(&geral, &jogo, tamanhos);
+
     //iniciazação das variaveis da cena da conf
-    VariveisConf conf;
+    VariveisConf conf = {AZUL};
     InitCenaConf(&geral, &conf, tamanhos);
     conf.reso_inicial = tamanhos.escala;
 
+    //iniciazação das variaveis da cena. Apenas para debug
+    VariaveisMapa mapa = {AZUL};
+    InitCenaMapa(geral.renderizador, &mapa, tamanhos);
+
+
+
+    // normalização do tempo
     Uint64 tempo_inicial = SDL_GetPerformanceCounter();
     double tempo;
+
+    // loop principal
     while (geral.rodando)
     {
         tempo_inicial = SDL_GetPerformanceCounter();
@@ -51,6 +61,11 @@ int main(void)
         case (CENA_JOGO):
             LoopCenaJogo(&geral, &jogo, tempo);
             DesenharCenaJogo(geral, jogo);
+            break;
+        
+        case (CENA_CRIACAO):
+            LoopCenaMapa(&geral, &mapa);
+            DesenharCenaMapa(geral, mapa);
             break;
 
         case (CENA_PAUSE):

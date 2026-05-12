@@ -25,7 +25,7 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanho
         "assets/images/ui/panels/moldura de madeira.png"
     );
     
-    CalcularMolduraPartes(&pause->moldura,48);
+    CalcularMolduraPartes(&pause->moldura, CantoFixo);
 
     // Criação do pause
     // Criação dos botões
@@ -108,7 +108,7 @@ void LoopCenaPause(VariveisGerais *geral, VariveisPause *pause){
 
     for (int i = 0; i < quant_botoes; i++)
     {
-        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_direito)){
+        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_esquerdo)){
             geral->cena_passada = geral->cena;
             geral->cena = botoes[i]->indice;
         }

@@ -10,7 +10,8 @@
 #define BRANCO {255, 255, 255, 255}
 #define VERMELHO {255, 20, 20, 255}
 #define VERDE {20, 255, 20, 255}
-#define AZUL {20, 20, 25, 255}
+#define AZUL {20, 20, 255, 255}
+#define AZUL_CLARO {140, 210, 230, 255}
 #define SEMI_PRETO {0, 0, 0, 128}
 
 
@@ -18,9 +19,14 @@
 #define EscalaMarcador 16
 #define EscalaBotao 8
 #define CantoFixo 48
-
 #define MedidaImgPlayerX 120
 #define MedidaImgPlayerY 80
+#define MedidaImgPlayerColiX 21
+#define MedidaImgPlayerColiY 38
+#define MedidaImgInimigo1X 120
+#define MedidaImgInimigo1Y 80
+#define MedidaImgInimigo2X 120
+#define MedidaImgInimigo2Y 80
 #define MedidaImgBloco 16
 
 // enuns
@@ -121,8 +127,8 @@ typedef struct VariveisGerais
     int cena_passada;
     bool rodando;
     float mouse_x, mouse_y;
-    bool botao_mouse_direito;
-    bool botao_mouse_esquerdo;
+    int botao_mouse_direito;
+    int botao_mouse_esquerdo;
     Player jogador;
     int resolucao_atual[2];
     bool fullscrean;

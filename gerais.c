@@ -17,29 +17,29 @@ void GetTamanhos(TAMANHOS *tamanhos)
         tamanhos->tamanho_tela[1] = 360;
     }
     
-    tamanhos->tamanho_menu[0]         = tamanhos->tamanho_tela[0] * (float)48 / 640 * 6;
-    tamanhos->tamanho_menu[1]         = tamanhos->tamanho_tela[1] * (float)48 / 360 * 6;
+    tamanhos->tamanho_menu[0]         = tamanhos->tamanho_tela[0] * (float)CantoFixo / 640 * 6;
+    tamanhos->tamanho_menu[1]         = tamanhos->tamanho_tela[1] * (float)CantoFixo / 360 * 6;
 
-    tamanhos->tamanho_bloco1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco / 640;
-    tamanhos->tamanho_bloco1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco / 360;
+    tamanhos->tamanho_bloco1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->tamanho_bloco1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
 
-    tamanhos->tamanho_botao1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco / 640 * 2;
-    tamanhos->tamanho_botao1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco / 360 * 2;
+    tamanhos->tamanho_botao1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->tamanho_botao1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
 
-    tamanhos->tamanho_botao2[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco / 640 * 2;
-    tamanhos->tamanho_botao2[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco / 360 * 2;
+    tamanhos->tamanho_botao2[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->tamanho_botao2[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
     
-    tamanhos->tamanho_jogador[0]      = tamanhos->tamanho_tela[0] * (float)MedidaImgPlayerX / 640;
-    tamanhos->tamanho_jogador[1]      = tamanhos->tamanho_tela[1] * (float)MedidaImgPlayerY / 360;
+    tamanhos->tamanho_jogador[0]      = tamanhos->tamanho_tela[0] * (float)MedidaImgPlayerX   / 640 * 2;
+    tamanhos->tamanho_jogador[1]      = tamanhos->tamanho_tela[1] * (float)MedidaImgPlayerY   / 360 * 2;
 
-    tamanhos->tamanho_inimigo1[0]     = tamanhos->tamanho_tela[0] * (float)64 / 640;
-    tamanhos->tamanho_inimigo1[1]     = tamanhos->tamanho_tela[1] * (float)48 / 360;
+    tamanhos->tamanho_inimigo1[0]     = tamanhos->tamanho_tela[0] * (float)MedidaImgInimigo1X / 640;
+    tamanhos->tamanho_inimigo1[1]     = tamanhos->tamanho_tela[1] * (float)MedidaImgInimigo1Y / 360;
 
-    tamanhos->tamanho_inimigo2[0]     = tamanhos->tamanho_tela[0] * (float)64 / 640;
-    tamanhos->tamanho_inimigo2[1]     = tamanhos->tamanho_tela[1] * (float)48 / 360;
+    tamanhos->tamanho_inimigo2[0]     = tamanhos->tamanho_tela[0] * (float)MedidaImgInimigo2X / 640;
+    tamanhos->tamanho_inimigo2[1]     = tamanhos->tamanho_tela[1] * (float)MedidaImgInimigo2Y / 360;
     
-    tamanhos->tamanho_jogador_coli[0] = tamanhos->tamanho_tela[0] * (float)21 / 640;
-    tamanhos->tamanho_jogador_coli[1] = tamanhos->tamanho_tela[1] * (float)38 / 360;
+    tamanhos->tamanho_jogador_coli[0] = tamanhos->tamanho_tela[0] * (float)MedidaImgPlayerColiX / 640 * 2;
+    tamanhos->tamanho_jogador_coli[1] = tamanhos->tamanho_tela[1] * (float)MedidaImgPlayerColiY / 360 * 2;
 }
 
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo)
@@ -634,8 +634,17 @@ void ModuloEvento(VariveisGerais *jogo)
     {
         jogo->rodando = false;
     }
-    if (jogo->evento.type == SDL_EVENT_MOUSE_BUTTON_DOWN)
-        jogo->botao_mouse_direito = true;
-    else
-        jogo->botao_mouse_direito = false;
+    if (jogo->evento.type == SDL_EVENT_MOUSE_BUTTON_DOWN){
+        if(jogo->evento.button.button == SDL_BUTTON_LEFT)
+            jogo->botao_mouse_esquerdo = true;
+
+        if(jogo->evento.button.button == SDL_BUTTON_RIGHT)
+            jogo->botao_mouse_direito = true;
+    }
+    else{
+        jogo->botao_mouse_esquerdo = false;
+         jogo->botao_mouse_direito = false;
+    }
+
+    
 }

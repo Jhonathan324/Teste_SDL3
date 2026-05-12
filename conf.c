@@ -129,7 +129,7 @@ void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
         &conf->botao_reso.botao_pai
     };
 
-    if(VerificarBotao(botoes[0],geral->ponto_mouse,geral->botao_mouse_direito)){
+    if(VerificarBotao(botoes[0],geral->ponto_mouse,geral->botao_mouse_esquerdo)){
         int temp = geral->cena;
         geral->cena = geral->cena_passada;
         geral->cena_passada=temp;
@@ -140,18 +140,18 @@ void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
         }
     }
 
-    if(VerificarMarcador(&conf->troca_fullscreen,geral->ponto_mouse, geral->botao_mouse_direito)){
+    if(VerificarMarcador(&conf->troca_fullscreen,geral->ponto_mouse, geral->botao_mouse_esquerdo)){
         geral->fullscrean = !geral->fullscrean;
         CalcularGeral(geral, tamanhos);
         InitCenaConf(geral, conf, *tamanhos);
     }
 
-    if(VerificarBotao(botoes[1],geral->ponto_mouse,geral->botao_mouse_direito)){
+    if(VerificarBotao(botoes[1],geral->ponto_mouse,geral->botao_mouse_esquerdo)){
         conf->botao_reso.expandido = !conf->botao_reso.expandido;
     }
     if(conf->botao_reso.expandido){
         for(int i = 0; i < 7; i++){
-            if(VerificarBotao(&conf->botao_reso.botao_filho[i],geral->ponto_mouse,geral->botao_mouse_direito) ){
+            if(VerificarBotao(&conf->botao_reso.botao_filho[i],geral->ponto_mouse,geral->botao_mouse_esquerdo) ){
                 if(i == tamanhos->escala)conf->botao_reso.expandido = false;
                 else{
                     tamanhos->escala = i;

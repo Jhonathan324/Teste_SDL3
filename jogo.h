@@ -183,8 +183,8 @@ void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera came
 
 
 TiposVMMA CalcularTipoVMMA(int n);
-void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2]);
-void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2]);
+void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2], Camera camera);
+void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2], Camera camera);
 
 
 //Criação de Mapa

@@ -22,7 +22,7 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
 
     menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&menu->moldura, 48);
+    CalcularMolduraPartes(&menu->moldura, CantoFixo);
 
     // Criação dos botões
     DestruirBotao(&menu->botao_conf);
@@ -102,7 +102,7 @@ void LoopCenaMenu(VariveisGerais *geral, VariveisMenu *menu)
     };
 
     for (int i = 0; i < quant_botoes; i++){
-        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_direito)){
+        if(VerificarBotao(botoes[i],geral->ponto_mouse,geral->botao_mouse_esquerdo)){
             geral->cena_passada = geral->cena;
             geral->cena = botoes[i]->indice;
         }
