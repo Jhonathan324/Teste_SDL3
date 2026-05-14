@@ -14,7 +14,7 @@
 #define AZUL_CLARO {140, 210, 230, 255}
 #define SEMI_PRETO {0, 0, 0, 128}
 
-
+#define EscalaHud 16
 #define EscalaMoldura 16
 #define EscalaMarcador 16
 #define EscalaBotao 8
@@ -23,15 +23,14 @@
 #define MedidaImgPlayerY 80
 #define MedidaImgPlayerColiX 21
 #define MedidaImgPlayerColiY 38
-#define MedidaImgInimigo1X 120
-#define MedidaImgInimigo1Y 80
+#define MedidaImgInimigo1X 48
+#define MedidaImgInimigo1Y 32
 #define MedidaImgInimigo2X 120
 #define MedidaImgInimigo2Y 80
 #define MedidaImgBloco 16
 
 // enuns
-enum ESTADO_JOGO
-{
+typedef enum {
     CENA_MENU,
     CENA_JOGO,
     CENA_PAUSE,
@@ -39,7 +38,7 @@ enum ESTADO_JOGO
     CENA_CONF,
     CENA_CREDITOS, // algum dia eu vou usar
     CENA_SAIR,
-};
+}ESTADO_JOGO;
 
 // elementos UI
 typedef struct CampoTexto{
@@ -94,19 +93,20 @@ typedef struct BotaoExpansivo
 } BotaoExpansivo;
 
 // Coisas mais especificas
-typedef struct TAMANHOS
+typedef struct Tamanhos
 {
     int escala;
-    float tamanho_tela[2];
-    float tamanho_menu[2];
-    float tamanho_botao1[2];
-    float tamanho_botao2[2];
-    float tamanho_jogador[2];
-    float tamanho_jogador_coli[2];
-    float tamanho_inimigo1[2];
-    float tamanho_inimigo2[2];
-    float tamanho_bloco1[2];
-} TAMANHOS;
+    float tela[2];
+    float menu[2];
+    float botao1[2];
+    float botao2[2];
+    float barra_vida[2];
+    float jogador[2];
+    float jogador_coli[2];
+    float inimigo1[2];
+    float inimigo2[2];
+    float bloco1[2];
+} Tamanhos;
 
 // Structs abstratas
 typedef struct Player
@@ -123,20 +123,23 @@ typedef struct VariveisGerais
     SDL_Renderer *renderizador;
     SDL_Event evento;
     SDL_Point ponto_mouse;
-    int cena;
+    SDL_Texture *textura_hud;
+    SDL_FRect barra_de_vida;
     int cena_passada;
     int cena_continuar;
-    bool rodando;
-    float mouse_x, mouse_y;
-    float mouse_x_back, mouse_y_back;
     int botao_mouse_direito;
     int botao_mouse_esquerdo;
     int botao_mouse_meio;
     int botao_mouse_gira;
-    Player jogador;
     int resolucao_atual[2];
+    int resolucao_antiga[2];
+    float mouse_x, mouse_y;
+    float mouse_x_back, mouse_y_back;
+    bool rodando;
     bool fullscrean;
     bool troca_reso;
+    Player jogador;
+    ESTADO_JOGO cena;
 } VariveisGerais;
 
 typedef struct VariveisMenu
@@ -177,7 +180,7 @@ typedef struct VariveisConf
 } VariveisConf;
 
 // Funções especificas
-void GetTamanhos(TAMANHOS *tamanhos);
+void GetTamanhos(Tamanhos *tamanhos);
 
 // Funções desnecessarias
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo);
@@ -214,20 +217,20 @@ void DestruirBotaoExpansivo(BotaoExpansivo *botao);
 
 // Funções só pra tratamento de eventos
 void ModuloEvento(VariveisGerais *geral);
-void InitCenaGeral(VariveisGerais *geral, TAMANHOS *tamanhos);
-void CalcularGeral(VariveisGerais *geral, TAMANHOS *tamanhos);
+void InitCenaGeral(VariveisGerais *geral, Tamanhos *tamanhos);
+void CalcularGeral(VariveisGerais *geral, Tamanhos *tamanhos);
 
 // Funções para cenas em especico
-void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos);
+void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, Tamanhos tamanhos);
 void LoopCenaMenu(VariveisGerais *geral, VariveisMenu *menu);
 void DesenharCenaMenu(VariveisGerais geral, VariveisMenu menu);
 
-void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos);
+void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, Tamanhos tamanhos);
 void LoopCenaPause(VariveisGerais *geral, VariveisPause *pause);
 void DesenharCenaPause(VariveisGerais geral, VariveisPause pause);
 
-void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos);
-void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos);
+void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos);
+void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos *tamanhos);
 void DesenharCenaConf(VariveisGerais geral, VariveisConf conf);
 
 #endif // GERAIS_H_INCLUDED

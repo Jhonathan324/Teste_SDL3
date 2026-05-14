@@ -42,6 +42,17 @@
 		X(VMM_PLAYER_AGARRAR,          1) \
 		X(VMM_PLAYER_DESLIZAR_PAREDE,  3) 
 
+#define TabelaPorcoAnim \
+		X(VMM_PORCO_ANDAR,   6) \
+		X(VMM_PORCO_CORRER,  6) \
+		X(VMM_PORCO_IDLE,    4) \
+		X(VMM_PORCO_HIT,     4) \
+
+typedef enum{
+	PORCO_NORMAL,
+	ABELHA,
+	CARACOL,
+} TiposInimigo;
 
 typedef enum {
 		VMMA_SEM_COLI,
@@ -111,6 +122,21 @@ typedef enum {
 		X(VMM_BLOCO_PEDRA4x2, 2, 9, VMMA_PEDRA_ON) \
 		X(VMM_BLOCO_PEDRA4x3, 3, 9, VMMA_PEDRA_ON) \
 		X(VMM_BLOCO_PEDRA4x4, 4, 9, VMMA_PEDRA_ON) \
+		\
+		\
+		X(VMM_BLOCO_PEDRA_MUSGO0x0, 0, 10, VMMA_SEM_COLI) \
+		X(VMM_BLOCO_PEDRA_MUSGO0x1, 1, 10, VMMA_SEM_COLI) \
+		\
+		X(VMM_BLOCO_PEDRA_MUSGO1x0, 0, 11, VMMA_PEDRA_ON) \
+		X(VMM_BLOCO_PEDRA_MUSGO1x1, 1, 11, VMMA_PEDRA_ON) \
+		\
+		\
+		X(VMM_BLOCO_PEDRA_LATERAL0x0, 2, 10, VMMA_SEM_COLI) \
+		X(VMM_BLOCO_PEDRA_LATERAL0x1, 3, 10, VMMA_SEM_COLI) \
+		\
+		X(VMM_BLOCO_PEDRA_LATERAL1x0, 2, 11, VMMA_PEDRA_ON) \
+		X(VMM_BLOCO_PEDRA_LATERAL1x1, 3, 11, VMMA_PEDRA_ON) \
+
 
 
 
@@ -118,6 +144,11 @@ typedef enum {
 typedef enum {
 	 TabelaPlayerAnim
 } ESTADO_PLAYER;
+
+typedef enum {
+	 TabelaPorcoAnim
+} ESTADO_PORCO;
+
 #undef X
 
 #define X(index, x_loc, y_loc, tipo) index,
@@ -156,6 +187,32 @@ typedef struct PlayerInJogo
 		SDL_Texture *sprite_atlas;
 }PlayerInJogo;
 
+typedef struct Inimigo
+{
+	int estado_atual;
+	int estado_passado;
+	int pulo;
+	int coyote_time;
+	bool costas;
+	bool coli_h;
+	bool coli_v;
+	float vida;
+	double frame;
+	double acelera;
+	double vel_max_x;
+	double vel_max_y;
+	double velocidade_x;
+	double velocidade_y;
+	double posicao_x;
+	double posicao_y;
+	SDL_Rect retangulo_area;
+	SDL_Rect retangulo_coli;
+	SDL_Rect retangulo_coli_h;
+	SDL_Rect retangulo_coli_v;
+	SDL_FRect retangulo_img;
+	TiposInimigo index;
+}Inimigo;
+
 typedef struct Bloco{
 		SDL_Texture *textura;
 		SDL_FRect loc;
@@ -176,33 +233,45 @@ typedef struct Camera {
 typedef struct VariveisJogo
 {
 		SDL_Color cor_fundo;
-		Mapa mapa;
+		SDL_Texture *sprite_atlas_inimigos[3];
+
 		PlayerInJogo jogador;
-		double tempo;
+		Inimigo inimigos[10];
 		Camera camera;
+		Mapa mapa;
+
 		int tamanho_bloco[2];
+		double tempo;
 } VariveisJogo;
 
 
 
-void InitCenaJogo    (VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos);
-void CalcularCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, TAMANHOS tamanhos);
+void InitCenaJogo    (VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos);
+void CalcularCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos);
 void LoopCenaJogo    (VariveisGerais *geral, VariveisJogo *jogo, double delta_t);
-void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo);
+void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos);
 
 
 void DesenharBloco(SDL_Renderer *renderizador, Bloco bloco);
 void DesenharMapa(SDL_Renderer *renderizador, Mapa mapa, Camera camera, int tamanho_bloco[2], int tamanhos_tela[2]);
+void DesenharHud(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos);
 SDL_FRect MapaTiles(int n);
 
 PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img);
 void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame, Camera *camera, Mapa mapa, int tamanho_bloco[2], int tamanhos_tela[2]);
 void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera camera);
 
+Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_area, SDL_Rect retangulo_coli,  int index);
+void CalcularInimigo(Inimigo *inimigo, double delta_frame, Camera *camera, Mapa mapa, int tamanho_bloco[2], int tamanhos_tela[2]);
+void DesenharInimigo(SDL_Renderer *renderizador, Inimigo inimigo, SDL_Texture *sprite_atlas, Camera camera );
+
 
 TiposVMMA CalcularTipoVMMA(int n);
 void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2], Camera camera);
 void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], int tamanho_tela[2], Camera camera);
+
+void ColisaoInimigoMapaH(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera);
+void ColisaoInimigoMapaV(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera);
 
 
 //Criação de Mapa

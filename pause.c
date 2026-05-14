@@ -2,16 +2,16 @@
 #include <stdbool.h>
 #include "gerais.h"
 
-void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanhos)
+void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, Tamanhos tamanhos)
 {
     // fonte
-    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_tela[1] / 10);
+    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tela[1] / 10);
 
     // fundo
     pause->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/UI/backgrounds/pause.png");
 
     // Criação do pause para os botões
-    SDL_FRect rect_moldura = {0, 0, tamanhos.tamanho_menu[0], tamanhos.tamanho_menu[1]};
+    SDL_FRect rect_moldura = {0, 0, tamanhos.menu[0], tamanhos.menu[1]};
 
     // obtenção do rect da janela
     int janela_x, janela_y, janela_w, janela_h;
@@ -22,7 +22,7 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanho
     pause->moldura = InitMoldura(
         geral->renderizador, 
         &rect_moldura, 
-        "assets/images/ui/panels/moldura de madeira.png"
+        "assets/imagens/ui/panels/moldura de madeira.png"
     );
     
     CalcularMolduraPartes(&pause->moldura, CantoFixo);
@@ -38,10 +38,10 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanho
                 &(SDL_FRect){
                     0,
                     0,
-                    tamanhos.tamanho_botao1[0],
-                    tamanhos.tamanho_botao1[1]
+                    tamanhos.botao1[0],
+                    tamanhos.botao1[1]
                 }, // retangulo base
-                "assets/images/ui/buttons/botão.png",
+                "assets/imagens/ui/buttons/botão.png",
                 "Continuar",
                 (SDL_Color){70, 70, 70, 255},
                 (SDL_Color)SEMI_PRETO,
@@ -54,10 +54,10 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanho
                   &(SDL_FRect){
                     0, 
                     0, 
-                    tamanhos.tamanho_botao1[0], 
-                    tamanhos.tamanho_botao1[1]
+                    tamanhos.botao1[0], 
+                    tamanhos.botao1[1]
                     }, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  "assets/imagens/ui/buttons/botão.png",
                   "Configuracoes",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,
@@ -70,10 +70,10 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, TAMANHOS tamanho
                   &(SDL_FRect){
                     0,
                     0, 
-                    tamanhos.tamanho_botao1[0],
-                    tamanhos.tamanho_botao1[1]
+                    tamanhos.botao1[0],
+                    tamanhos.botao1[1]
                   }, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  "assets/imagens/ui/buttons/botão.png",
                   "Menu Inicial",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,

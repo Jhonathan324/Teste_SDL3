@@ -4,16 +4,16 @@
 
 #define QuantBotao 4
 
-void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
+void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, Tamanhos tamanhos)
 {
     // fonte
-    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_botao1[1]);
+    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.botao1[1]);
 
     // fundo
     menu->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/UI/backgrounds/menu.png");
 
     // Criação do menu para os botões
-    SDL_FRect rect_moldura = {0, 0, tamanhos.tamanho_menu[0], tamanhos.tamanho_menu[1]};
+    SDL_FRect rect_moldura = {0, 0, tamanhos.menu[0], tamanhos.menu[1]};
 
     // obtenção do rect da janela
     int janela_x, janela_y, janela_w, janela_h;
@@ -21,7 +21,7 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
     CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
 
-    menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
+    menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
     CalcularMolduraPartes(&menu->moldura, CantoFixo);
 
     // Criação dos botões
@@ -31,8 +31,8 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
     DestruirBotao(&menu->botao_sair);
     menu->botao_iniciar =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  &(SDL_FRect){0, 0, tamanhos.botao1[0], tamanhos.botao1[1]}, // retangulo base
+                  "assets/imagens/ui/buttons/botão.png",
                   "Iniciar Jogo",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,
@@ -42,8 +42,8 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
 
     menu->botao_criacao =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  &(SDL_FRect){0, 0, tamanhos.botao1[0], tamanhos.botao1[1]}, // retangulo base
+                  "assets/imagens/ui/buttons/botão.png",
                   "Criar Mapas",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,
@@ -53,8 +53,8 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
 
     menu->botao_conf =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  &(SDL_FRect){0, 0, tamanhos.botao1[0], tamanhos.botao1[1]}, // retangulo base
+                  "assets/imagens/ui/buttons/botão.png",
                   "Configuracoes",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,
@@ -64,8 +64,8 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, TAMANHOS tamanhos)
 
     menu->botao_sair =
         InitBotao(geral->renderizador,
-                  &(SDL_FRect){0, 0, tamanhos.tamanho_botao1[0], tamanhos.tamanho_botao1[1]}, // retangulo base
-                  "assets/images/ui/buttons/botão.png",
+                  &(SDL_FRect){0, 0, tamanhos.botao1[0], tamanhos.botao1[1]}, // retangulo base
+                  "assets/imagens/ui/buttons/botão.png",
                   "Sair do Jogo",
                   (SDL_Color){70, 70, 70, 255},
                   (SDL_Color)SEMI_PRETO,

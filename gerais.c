@@ -5,41 +5,44 @@
 
 // Para eu não me perder as funções deste .c esta organizado na mesma ordem das funções do gerais.h
 
-void GetTamanhos(TAMANHOS *tamanhos)
+void GetTamanhos(Tamanhos *tamanhos)
 {
     if(tamanhos->escala >= 0 && tamanhos->escala <=6){
-        tamanhos->tamanho_tela[0] = 320 * (tamanhos->escala + 2);
-        tamanhos->tamanho_tela[1] = 180 * (tamanhos->escala + 2);
+        tamanhos->tela[0] = 320 * (tamanhos->escala + 2);
+        tamanhos->tela[1] = 180 * (tamanhos->escala + 2);
     }
     else{
         tamanhos->escala = 0;
-        tamanhos->tamanho_tela[0] = 640;
-        tamanhos->tamanho_tela[1] = 360;
+        tamanhos->tela[0] = 640;
+        tamanhos->tela[1] = 360;
     }
     
-    tamanhos->tamanho_menu[0]         = tamanhos->tamanho_tela[0] * (float)CantoFixo / 640 * 6;
-    tamanhos->tamanho_menu[1]         = tamanhos->tamanho_tela[1] * (float)CantoFixo / 360 * 6;
+    tamanhos->menu[0]         = tamanhos->tela[0] * (float)CantoFixo / 640 * 6;
+    tamanhos->menu[1]         = tamanhos->tela[1] * (float)CantoFixo / 360 * 6;
 
-    tamanhos->tamanho_bloco1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
-    tamanhos->tamanho_bloco1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
+    tamanhos->bloco1[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->bloco1[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
 
-    tamanhos->tamanho_botao1[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
-    tamanhos->tamanho_botao1[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
+    tamanhos->botao1[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->botao1[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
 
-    tamanhos->tamanho_botao2[0]       = tamanhos->tamanho_tela[0] * (float)MedidaImgBloco     / 640 * 2;
-    tamanhos->tamanho_botao2[1]       = tamanhos->tamanho_tela[1] * (float)MedidaImgBloco     / 360 * 2;
+    tamanhos->botao2[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
+    tamanhos->botao2[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
     
-    tamanhos->tamanho_jogador[0]      = tamanhos->tamanho_tela[0] * (float)MedidaImgPlayerX   / 640 * 2;
-    tamanhos->tamanho_jogador[1]      = tamanhos->tamanho_tela[1] * (float)MedidaImgPlayerY   / 360 * 2;
+    tamanhos->jogador[0]      = tamanhos->tela[0] * (float)MedidaImgPlayerX   / 640 * 2;
+    tamanhos->jogador[1]      = tamanhos->tela[1] * (float)MedidaImgPlayerY   / 360 * 2;
 
-    tamanhos->tamanho_inimigo1[0]     = tamanhos->tamanho_tela[0] * (float)MedidaImgInimigo1X / 640;
-    tamanhos->tamanho_inimigo1[1]     = tamanhos->tamanho_tela[1] * (float)MedidaImgInimigo1Y / 360;
+    tamanhos->inimigo1[0]     = tamanhos->tela[0] * (float)MedidaImgInimigo1X / 640 * 2;
+    tamanhos->inimigo1[1]     = tamanhos->tela[1] * (float)MedidaImgInimigo1Y / 360 * 2;
 
-    tamanhos->tamanho_inimigo2[0]     = tamanhos->tamanho_tela[0] * (float)MedidaImgInimigo2X / 640;
-    tamanhos->tamanho_inimigo2[1]     = tamanhos->tamanho_tela[1] * (float)MedidaImgInimigo2Y / 360;
+    tamanhos->inimigo2[0]     = tamanhos->tela[0] * (float)MedidaImgInimigo2X / 640;
+    tamanhos->inimigo2[1]     = tamanhos->tela[1] * (float)MedidaImgInimigo2Y / 360;
     
-    tamanhos->tamanho_jogador_coli[0] = tamanhos->tamanho_tela[0] * (float)MedidaImgPlayerColiX / 640 * 2;
-    tamanhos->tamanho_jogador_coli[1] = tamanhos->tamanho_tela[1] * (float)MedidaImgPlayerColiY / 360 * 2;
+    tamanhos->jogador_coli[0] = tamanhos->tela[0] * (float)MedidaImgPlayerColiX / 640 * 2;
+    tamanhos->jogador_coli[1] = tamanhos->tela[1] * (float)MedidaImgPlayerColiY / 360 * 2;
+
+    tamanhos->jogador_coli[0] = tamanhos->tela[0] * (float)(EscalaHud*4) / 640 * 2;
+    tamanhos->jogador_coli[1] = tamanhos->tela[1] * (float)(EscalaHud*1) / 360 * 2;
 }
 
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo)

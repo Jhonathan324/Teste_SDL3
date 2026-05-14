@@ -2,11 +2,11 @@
 #include <stdbool.h>
 #include "gerais.h"
 
-void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
+void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos)
 {
 
     // fonte
-    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tamanho_tela[1] / 10);
+    TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.tela[1] / 10);
 
     // fundo
     if(conf->imagem){
@@ -15,16 +15,16 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/UI/backgrounds/conf.png");
 
     // Criação da moldura para os botões
-    SDL_FRect rect_moldura = {0, 0, tamanhos.tamanho_menu[0], tamanhos.tamanho_menu[1]};
+    SDL_FRect rect_moldura = {0, 0, tamanhos.menu[0], tamanhos.menu[1]};
 
     // obtenção do rect da janela
-    int janela_x, janela_y, janela_w, janela_h;
+    int janela_w, janela_h;
     SDL_GetWindowSize(geral->janela, &janela_w, &janela_h);
     SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
     CentralizarRectInRect(&rect_janela, &rect_moldura);
 
     DestruirMoldura(&conf->moldura);
-    conf->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/images/ui/panels/moldura de madeira.png");
+    conf->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
     CalcularMolduraPartes(&conf->moldura, CantoFixo);
 
     //Textos
@@ -33,8 +33,8 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->texto_reso = InitTexto(geral->renderizador, 
         &(SDL_FRect){conf->moldura.retangulo.x + CantoFixo -10,
             conf->moldura.retangulo.y + CantoFixo,
-            tamanhos.tamanho_botao1[0],
-            tamanhos.tamanho_botao1[1]/2},
+            tamanhos.botao1[0],
+            tamanhos.botao1[1]/2},
         (SDL_Color){0,0,0,0},
         "Resolução",
         NULL,
@@ -45,8 +45,8 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->texto_full = InitTexto(geral->renderizador, 
         &(SDL_FRect){0,
             conf->moldura.retangulo.y + CantoFixo,
-            tamanhos.tamanho_botao1[0],
-            tamanhos.tamanho_botao1[1]/2},
+            tamanhos.botao1[0],
+            tamanhos.botao1[1]/2},
         (SDL_Color){0,0,0,0},
         "Tela Cheia",
         NULL,
@@ -64,10 +64,10 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     InitBotao(geral->renderizador,
         &(SDL_FRect){
             conf->moldura.retangulo.x + conf->moldura.retangulo.w - CantoFixo/2,
-            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.tamanho_botao1[1] - CantoFixo/2,
-            tamanhos.tamanho_botao1[0],
-            tamanhos.tamanho_botao1[1]}, // retangulo base
-        "assets/images/ui/buttons/botão.png",
+            conf->moldura.retangulo.y + conf->moldura.retangulo.h - tamanhos.botao1[1] - CantoFixo/2,
+            tamanhos.botao1[0],
+            tamanhos.botao1[1]}, // retangulo base
+        "assets/imagens/ui/buttons/botão.png",
         "Voltar",
         (SDL_Color){70, 70, 70, 255},
         (SDL_Color){30, 30, 30, 255},
@@ -79,10 +79,10 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     conf->troca_fullscreen = InitMarcador(geral->renderizador ,&(SDL_FRect){
         conf->texto_full.retangulo.x+CantoFixo*((float)2/3),
         conf->texto_full.retangulo.y + conf->texto_full.retangulo.h ,
-        tamanhos.tamanho_botao1[1],
-        tamanhos.tamanho_botao1[1]},
+        tamanhos.botao1[1],
+        tamanhos.botao1[1]},
         geral->fullscrean,
-        "assets/images/ui/buttons/marcador.png",
+        "assets/imagens/ui/buttons/marcador.png",
         (SDL_Color)PRETO,
         (SDL_Color)BRANCO
     );
@@ -103,9 +103,9 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
         &(SDL_FRect){
             conf->moldura.retangulo.x + CantoFixo,
             conf->texto_reso.retangulo.y + conf->texto_reso.retangulo.h ,
-            tamanhos.tamanho_botao1[0],
-            tamanhos.tamanho_botao1[1]}, // retangulo base
-        "assets/images/ui/buttons/botão.png",
+            tamanhos.botao1[0],
+            tamanhos.botao1[1]}, // retangulo base
+        "assets/imagens/ui/buttons/botão.png",
         resolucao_atual,
         textos,
         (SDL_Color)BRANCO,
@@ -116,14 +116,13 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS tamanhos)
     CalcularBotaoExpansivoPartes(&conf->botao_reso);
 }
 
-void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, TAMANHOS *tamanhos)
+void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos *tamanhos)
 {   
     // obtendo a localização do mouese
     SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
     geral->ponto_mouse.x = geral->mouse_x;
     geral->ponto_mouse.y = geral->mouse_y;
 
-    int quant_botoes = 2;
     Botao *botoes[] = {
         &conf->botao_sair,
         &conf->botao_reso.botao_pai

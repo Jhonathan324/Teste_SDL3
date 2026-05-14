@@ -9,7 +9,7 @@ int main(void)
     TTF_Init();
 
     //iniacilização de tudo
-    TAMANHOS tamanhos;
+    Tamanhos tamanhos;
     tamanhos.escala = 2;
     VariveisGerais geral;
     InitCenaGeral(&geral, &tamanhos);
@@ -60,7 +60,7 @@ int main(void)
 
         case (CENA_JOGO):
             LoopCenaJogo(&geral, &jogo, tempo);
-            DesenharCenaJogo(geral, jogo);
+            DesenharCenaJogo(geral, jogo, tamanhos);
             break;
         
         case (CENA_CRIACAO):
@@ -93,6 +93,8 @@ int main(void)
             InitCenaPause(&geral, &pause, tamanhos);
             InitCenaMapa(geral.renderizador, &mapa, tamanhos);
             CalcularCenaJogo(&geral, &jogo, tamanhos);
+            geral.resolucao_antiga[0] = geral.resolucao_atual[0];
+            geral.resolucao_antiga[1] = geral.resolucao_atual[1];
         }
 
         // Limpar a Tela

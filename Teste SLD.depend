@@ -5,10 +5,10 @@
 
 1776124136 ated upstream
 
-1778522654 source:c:\users\17898981\projetos\teste_sdl3\main.c
+1778781046 source:c:\users\17898981\projetos\teste_sdl3\main.c
 	<stdio.h>
 	<stdbool.h>
-	"jogo.h"
+	"mapa.h"
 
 1776386976 shed changes
 	<SDL3/SDL.h>
@@ -16,56 +16,60 @@
 	<stdio.h>
 	"gerais.h"
 
-1778676623 c:\users\17898981\projetos\teste_sdl3\gerais.h
+1778780788 c:\users\17898981\projetos\teste_sdl3\gerais.h
 	<SDL3/SDL.h>
 	<SDL3/SDL_ttf.h>
 	<SDL3_image/SDL_image.h>
 
-1778530383 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
+1778778564 source:c:\users\17898981\projetos\teste_sdl3\gerais.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	"gerais.h"
 
-1778521434 source:c:\users\17898981\projetos\teste_sdl3\jogo.c
+1778784120 source:c:\users\17898981\projetos\teste_sdl3\jogo.c
 	<stdio.h>
 	<stdlib.h>
 	<stdbool.h>
 	"jogo.h"
+	"mapa.h"
 
-1778521266 source:c:\users\17898981\projetos\teste_sdl3\pause.c
+1778784073 source:c:\users\17898981\projetos\teste_sdl3\pause.c
 	<stdio.h>
 	<stdbool.h>
 	"gerais.h"
 
-1778614222 source:c:\users\17898981\projetos\teste_sdl3\menu.c
+1778784100 source:c:\users\17898981\projetos\teste_sdl3\menu.c
 	<stdio.h>
 	<stdbool.h>
 	"gerais.h"
 
-1778531655 source:c:\users\17898981\projetos\teste_sdl3\geral.c
+1778780979 source:c:\users\17898981\projetos\teste_sdl3\geral.c
 	<stdio.h>
 	<stdbool.h>
 	"gerais.h"
 
-1778527702 source:c:\users\17898981\projetos\teste_sdl3\conf.c
+1778786376 source:c:\users\17898981\projetos\teste_sdl3\conf.c
 	<stdio.h>
 	<stdbool.h>
 	"gerais.h"
 
-1778531721 c:\users\17898981\projetos\teste_sdl3\jogo.h
+1778785834 c:\users\17898981\projetos\teste_sdl3\jogo.h
 	"gerais.h"
 
-1778529462 source:c:\users\17898981\projetos\teste_sdl3\jogofuncoes.c
+1778785910 source:c:\users\17898981\projetos\teste_sdl3\jogofuncoes.c
 	"jogo.h"
 	<stdio.h>
 	<stdlib.h>
 	<math.h>
 
-1778521138 source:c:\users\17898981\projetos\teste_sdl3\gera_mapa.c
+1778784144 source:c:\users\17898981\projetos\teste_sdl3\gera_mapa.c
 	<stdio.h>
 	<stdlib.h>
 	<stdint.h>
 	<stdbool.h>
+	"mapa.h"
+
+1778783413 c:\users\17898981\projetos\teste_sdl3\mapa.h
 	"jogo.h"
 
