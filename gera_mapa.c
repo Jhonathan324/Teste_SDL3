@@ -30,7 +30,9 @@ void CarregarMapa(Mapa *c, int n) {
 	FILE *f = fopen(nome, "rb");
 
 	if (f) {
-		fread(c->tiles, sizeof(uint8_t), TamanhosMapaX * TamanhosMapaY, f);
+		if(fread(c->tiles, sizeof(uint8_t), TamanhosMapaX * TamanhosMapaY, f) != TamanhosMapaX * TamanhosMapaY){
+			printf("Erro ao ler o mapa");
+		}
 		fclose(f);
 		printf("mapa %d carregado do disco\n", n);
 	} else {
@@ -77,7 +79,7 @@ void InitCenaMapa(SDL_Renderer *renderizador, VariaveisMapa *mapa, Tamanhos tama
 
 	if(mapa->mapa.textura) SDL_DestroyTexture(mapa->mapa.textura);
 	mapa->mapa.textura = IMG_LoadTexture(renderizador,"assets/imagens/world/tiles/Tiles.png");
-	SDL_SetTextureScaleMode(mapa->mapa.textura, SDL_SCALEMODE_NEAREST);
+	if (mapa->mapa.textura) SDL_SetTextureScaleMode(mapa->mapa.textura, SDL_SCALEMODE_NEAREST);
 
 	// Mapa variaveis
 	mapa->camera = (Camera){tamanhos.bloco1[0],(TamanhosMapaY/2)*tamanhos.bloco1[1]};

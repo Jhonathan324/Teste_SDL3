@@ -125,8 +125,10 @@ typedef struct VariveisGerais
     SDL_Point ponto_mouse;
     SDL_Texture *textura_hud;
     SDL_FRect barra_de_vida;
-    int cena_passada;
-    int cena_continuar;
+    bool debug;
+    bool rodando;
+    bool fullscrean;
+    bool troca_reso;
     int botao_mouse_direito;
     int botao_mouse_esquerdo;
     int botao_mouse_meio;
@@ -135,32 +137,31 @@ typedef struct VariveisGerais
     int resolucao_antiga[2];
     float mouse_x, mouse_y;
     float mouse_x_back, mouse_y_back;
-    bool rodando;
-    bool fullscrean;
-    bool troca_reso;
     Player jogador;
     ESTADO_JOGO cena;
+    ESTADO_JOGO cena_passada;
+    ESTADO_JOGO cena_continuar;
 } VariveisGerais;
 
 typedef struct VariveisMenu
 {
     SDL_Color cor_fundo;
+    SDL_Texture *imagem;
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_criacao;
     Botao botao_conf;
     Botao botao_sair;
-    SDL_Texture *imagem;
 } VariveisMenu;
 
 typedef struct VariveisPause
 {
     SDL_Color cor_fundo;
+    SDL_Texture *imagem;
     Moldura moldura;
     Botao botao_iniciar;
     Botao botao_conf;
     Botao botao_sair;
-    SDL_Texture *imagem;
 } VariveisPause;
 
 
@@ -168,13 +169,13 @@ typedef struct VariveisPause
 typedef struct VariveisConf
 {
     SDL_Color cor_fundo;
-    Moldura moldura;
-    Botao botao_sair;
-    Marcador troca_fullscreen;
-    BotaoExpansivo botao_reso;
     SDL_Texture *imagem;
-    int reso_inicial;
     bool valida_fullscrean;
+    int reso_inicial;
+    Marcador troca_fullscreen;
+    Botao botao_sair;
+    BotaoExpansivo botao_reso;
+    Moldura moldura;
     CampoTexto texto_reso;
     CampoTexto texto_full;
 } VariveisConf;

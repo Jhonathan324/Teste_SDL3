@@ -87,7 +87,7 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos)
         (SDL_Color)BRANCO
     );
 
-    char resolucao_atual[11];
+    char resolucao_atual[32];
     sprintf(resolucao_atual,"(%d, %d)",geral->resolucao_atual[0],geral->resolucao_atual[1]);
     char *textos[] = {
         "640, 360",

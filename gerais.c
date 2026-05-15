@@ -101,10 +101,10 @@ CampoTexto InitTexto(SDL_Renderer *renderizador, SDL_FRect *retangulo, SDL_Color
         texto,
         cor_fundo,
         SDL_CreateTextureFromSurface(renderizador, surface),
-        IMG_LoadTexture(renderizador, imagem),
+        imagem ? IMG_LoadTexture(renderizador, imagem) : NULL,
         proporcao
     };
-    SDL_SetTextureScaleMode(campo_texto.imagem, SDL_SCALEMODE_NEAREST);
+    if (campo_texto.imagem) SDL_SetTextureScaleMode(campo_texto.imagem, SDL_SCALEMODE_NEAREST);
     SDL_DestroySurface(surface);
     return campo_texto;
 }
@@ -156,8 +156,8 @@ void DestruirTexto(CampoTexto *texto){
 
 Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file)
 {
-    Moldura moldura = {*retangulo, IMG_LoadTexture(renderizador, file)};
-    SDL_SetTextureScaleMode(moldura.textura , SDL_SCALEMODE_NEAREST);
+    Moldura moldura = {*retangulo, file ? IMG_LoadTexture(renderizador, file) : NULL};
+    if (moldura.textura) SDL_SetTextureScaleMode(moldura.textura , SDL_SCALEMODE_NEAREST);
 
     return moldura;
 }
@@ -213,9 +213,9 @@ Marcador InitMarcador(SDL_Renderer *renderizador, SDL_FRect *retangulo, bool ati
         ativo,
         cor1,
         cor2,
-        IMG_LoadTexture(renderizador, imagem1)
+        imagem1 ? IMG_LoadTexture(renderizador, imagem1) : NULL
     };
-    SDL_SetTextureScaleMode(marcador.imagem1 , SDL_SCALEMODE_NEAREST);
+    if (marcador.imagem1) SDL_SetTextureScaleMode(marcador.imagem1 , SDL_SCALEMODE_NEAREST);
     return marcador;
 }
 
@@ -296,8 +296,8 @@ Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, 
         indice,     // indice
         cor1,       // cor1 e cor2
         cor2,
-        textura_texto,                          // textura texto
-        IMG_LoadTexture(renderizador, imagem)}; // textura da imagem
+        textura_texto,                                              // textura texto
+        imagem ? IMG_LoadTexture(renderizador, imagem) : NULL};    // textura da imagem
 
     float tamanho_canto;
     if (retangulo->h >= retangulo->w)
@@ -306,7 +306,7 @@ Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, 
         tamanho_canto = retangulo->h / 2;
 
     // imagem
-    SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
+    if (botao.imagem) SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
     return botao;
 }
 
@@ -426,7 +426,7 @@ BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangu
     // texto
     int x, y;
     float proporcao = 1;
-    SDL_Texture *textura_texto;
+    SDL_Texture *textura_texto = NULL;
     if (texto)
     {
         SDL_Surface *surface_texto = TTF_RenderText_Solid(fonte, texto, 0, cor_fonte);
@@ -447,8 +447,8 @@ BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangu
         indice,     // indice
         cor1,       // cor1 e cor2
         cor2,
-        textura_texto,                          // textura texto
-        IMG_LoadTexture(renderizador, imagem)}; // textura da imagem
+        textura_texto,                                              // textura texto
+        imagem ? IMG_LoadTexture(renderizador, imagem) : NULL};    // textura da imagem
 
     float tamanho_canto;
     if (retangulo->h >= retangulo->w)
@@ -457,7 +457,7 @@ BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangu
         tamanho_canto = retangulo->h / 2;
 
     // imagem
-    SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
+    if (botao.imagem) SDL_SetTextureScaleMode(botao.imagem, SDL_SCALEMODE_NEAREST);
 
     Botao *botoes = malloc(sizeof(Botao) * n);
     for (int i = 0; i < n; i++)
@@ -641,7 +641,7 @@ void ModuloEvento(VariveisGerais *geral)
         geral->rodando = false;
     }
     //mouse
-	SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
+        SDL_GetMouseState(&geral->mouse_x, &geral->mouse_y);
     geral->ponto_mouse.x = geral->mouse_x;
     geral->ponto_mouse.y = geral->mouse_y;
 

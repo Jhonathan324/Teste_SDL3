@@ -33,7 +33,7 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
         PORCO_NORMAL
     );
     jogo->sprite_atlas_inimigos[0] = IMG_LoadTexture(geral->renderizador, "assets/imagens/entities/mobs/porco marron.png");
-    SDL_SetTextureScaleMode(jogo->sprite_atlas_inimigos[0], SDL_SCALEMODE_NEAREST);
+    if (jogo->sprite_atlas_inimigos[0]) SDL_SetTextureScaleMode(jogo->sprite_atlas_inimigos[0], SDL_SCALEMODE_NEAREST);
     
 
     // Variaveis do Jogo
@@ -46,7 +46,7 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
     // Mapa
     jogo->mapa.n = 0;
     jogo->mapa.textura = IMG_LoadTexture(geral->renderizador, "assets/imagens/world/tiles/Tiles.png");
-    SDL_SetTextureScaleMode(jogo->mapa.textura, SDL_SCALEMODE_NEAREST);
+    if (jogo->mapa.textura) SDL_SetTextureScaleMode(jogo->mapa.textura, SDL_SCALEMODE_NEAREST);
     CarregarMapa(&jogo->mapa, jogo->mapa.n);
     /* Debug
     for(int i = 0; i<TamanhosMapaX; i++){
@@ -109,7 +109,7 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t){
     //inimigos
     SDL_Rect camera = {jogo->camera.x- geral->resolucao_atual[0]/2, jogo->camera.y - geral->resolucao_atual[1]/2, geral->resolucao_atual[0]*2, geral->resolucao_atual[1]*2};
     for(int i = 0; i<1; i++){
-        if(SDL_HasRectIntersection(&camera, &jogo->inimigos[i].retangulo_coli)){
+        if(jogo->inimigos[i].vida > 0 &&  SDL_HasRectIntersection(&camera, &jogo->inimigos[i].retangulo_coli)){
         CalcularInimigo(&jogo->inimigos[i], delta_t*100, &jogo->camera, jogo->mapa, jogo->tamanho_bloco, geral->resolucao_atual);
         ColisaoPlayerInimigo(&jogo->jogador, &jogo->inimigos[i]);
     }
@@ -125,6 +125,7 @@ void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos
     // Elementos
     DesenharMapa(geral.renderizador, jogo.mapa, jogo.camera, jogo.tamanho_bloco, geral.resolucao_atual);
     for(int i = 0; i<1; i++){
+        if(jogo.inimigos[i].vida > 0)
         DesenharInimigo(geral.renderizador, jogo.inimigos[i], jogo.sprite_atlas_inimigos[jogo.inimigos[i].index], jogo.camera);
     }
     DesenharPlayer(geral.renderizador, jogo.jogador, jogo.camera);
