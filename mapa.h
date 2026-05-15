@@ -30,7 +30,7 @@ typedef struct VariaveisMapa{
     Botao botao_carregar;
     Moldura moldura_bloco;
     Marcador marcador_preencher;
-    MarcadorBloco marcador[200];
+    MarcadorBloco marcador[600];
 }VariaveisMapa;
 
 void InitCenaMapa(SDL_Renderer *renderizador, VariaveisMapa *mapa, Tamanhos tamanhos);

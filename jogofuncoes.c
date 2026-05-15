@@ -68,6 +68,19 @@ PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL
 
 void CalcularPlayer(const bool *teclado, PlayerInJogo *jogador, double delta_frame, Camera *camera, Mapa mapa, int tamanho_bloco[2], int tamanhos_tela[2]){
 	double movi_v = true, movi_h = 0;
+
+	if(jogador->vida <= 0) {
+		jogador->vida = 100;
+		jogador->dano_sofrido = 0;
+		jogador->coracoes--;
+		jogador->retangulo_coli.x = tamanho_bloco[0];
+		jogador->retangulo_coli.y = 62*tamanho_bloco[1] - jogador->retangulo_coli.h;
+		jogador->retangulo_coli_h = jogador->retangulo_coli;
+		jogador->retangulo_coli_v = jogador->retangulo_coli;
+		jogador->posicao_x = jogador->retangulo_coli.x;
+		jogador->posicao_y = jogador->retangulo_coli.y;
+	}
+
 	jogador->frame += delta_frame;
 
 	// Logica do Player
@@ -521,7 +534,7 @@ void ColisaoPlayerInimigo(PlayerInJogo *jogador, Inimigo *inimigo){
 	}
 }
 
-
+void InitInimigosinMap(VariveisJogo jogo);
 
 void DesenharBloco(SDL_Renderer *renderizador, Bloco bloco){
 	SDL_RenderTexture(renderizador, bloco.textura, &bloco.loc, &bloco.retangulo);

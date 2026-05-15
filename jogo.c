@@ -30,9 +30,10 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0]*5,tamanhos.inimigo1[1]},
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0],tamanhos.inimigo1[1]},
         50,
-        10,
+        100,
         PORCO_NORMAL
     );
+    
     jogo->sprite_atlas_inimigos[0] = IMG_LoadTexture(geral->renderizador, "assets/imagens/entities/mobs/porco marron.png");
     if (jogo->sprite_atlas_inimigos[0]) SDL_SetTextureScaleMode(jogo->sprite_atlas_inimigos[0], SDL_SCALEMODE_NEAREST);
     
@@ -66,6 +67,8 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
  
 }
 
+
+
 void CalcularCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
     // Player
     double x = tamanhos.tela[0] * ( (double)jogo->jogador.retangulo_coli.x/geral->resolucao_antiga[0]);
@@ -98,6 +101,17 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t){
         geral->cena_passada = geral->cena;
         geral->cena = CENA_PAUSE;
     }
+
+    // Perda
+    if(jogo->jogador.coracoes <= 0 ){
+        geral->cena_continuar = geral->cena;
+        geral->cena_passada = geral->cena;
+        geral->cena = CENA_MENU;
+        jogo->jogador.coracoes = 3;
+        jogo->jogador.vida = 100;
+    }
+
+
     // Logica da camera 
     if(-jogo->camera.x+jogo->jogador.retangulo_coli.x + jogo->jogador.retangulo_coli.w > geral->resolucao_atual[0]*0.6) jogo->camera.x = jogo->jogador.retangulo_coli.x  + jogo->jogador.retangulo_coli.w - geral->resolucao_atual[0]*0.6;
     else if(-jogo->camera.x+jogo->jogador.retangulo_coli.x  < geral->resolucao_atual[0]*0.4) jogo->camera.x = jogo->jogador.retangulo_coli.x - geral->resolucao_atual[0]*0.4;
@@ -131,5 +145,10 @@ void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos
     }
     DesenharPlayer(geral.renderizador, jogo.jogador, jogo.camera);
     DesenharHud(geral, jogo, tamanhos);
+
+    SDL_SetRenderDrawColor(geral.renderizador, 0, 0, 0, 255);
+    SDL_RenderFillRect(geral.renderizador, &(SDL_FRect){
+
+    });
 }
 

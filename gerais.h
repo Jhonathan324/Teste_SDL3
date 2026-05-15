@@ -3,6 +3,7 @@
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_ttf.h>
 #include <SDL3_image/SDL_image.h>
+#include "desumano.h"
 
 #define CORCORFUNDO {20, 20, 20, 255}
 #define COR1 {20, 20, 20, 255}

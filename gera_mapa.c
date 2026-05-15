@@ -16,7 +16,7 @@ void SalvarMapa(Mapa *c) {
 		return;
 	}
 	printf("mapa salvo\n");
-	fwrite(c->tiles, sizeof(uint8_t), TamanhosMapaX * TamanhosMapaY, f);
+	fwrite(c->tiles, sizeof(uint16_t), TamanhosMapaX * TamanhosMapaY, f);
 	fclose(f);
 }
 
@@ -30,7 +30,7 @@ void CarregarMapa(Mapa *c, int n) {
 	FILE *f = fopen(nome, "rb");
 
 	if (f) {
-		if(fread(c->tiles, sizeof(uint8_t), TamanhosMapaX * TamanhosMapaY, f) != TamanhosMapaX * TamanhosMapaY){
+		if(fread(c->tiles, sizeof(uint16_t), TamanhosMapaX * TamanhosMapaY, f) != TamanhosMapaX * TamanhosMapaY){
 			printf("Erro ao ler o mapa");
 		}
 		fclose(f);
@@ -204,7 +204,7 @@ void LoopCenaMapa(VariveisGerais *geral, VariaveisMapa *mapa){
 		printf("preenchimento\n");
 	}
 	if(geral->mouse_x > mapa->moldura_bloco.retangulo.x){
-		mapa->rolada += geral->botao_mouse_gira * 20;
+		mapa->rolada += geral->botao_mouse_gira * 64;
 		geral->botao_mouse_gira = false;
 	}
 	else if(teclado[SDL_SCANCODE_LCTRL]){

@@ -10,17 +10,19 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, Tamanhos tamanhos)
     TTF_Font *fonte = TTF_OpenFont("assets/fonts/font1.fon", tamanhos.botao1[1]);
 
     // fundo
-    menu->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/UI/backgrounds/menu.png");
+    if(menu->imagem) SDL_DestroyTexture(menu->imagem);
+    menu->imagem = IMG_LoadTexture(geral->renderizador, "assets/imagens/ui/background/menu inicial.png");
+    SDL_SetTextureScaleMode(menu->imagem, SDL_SCALEMODE_NEAREST);
 
     // Criação do menu para os botões
-    SDL_FRect rect_moldura = {0, 0, tamanhos.menu[0], tamanhos.menu[1]};
+    SDL_FRect rect_moldura = {tamanhos.menu[1]*0.1, geral->resolucao_atual[1]-tamanhos.menu[1]*0.9, tamanhos.menu[0], tamanhos.menu[1]};
 
     // obtenção do rect da janela
     int janela_x, janela_y, janela_w, janela_h;
     SDL_GetWindowSize(geral->janela, &janela_w, &janela_h);
-    SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
-    CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
-
+    //SDL_FRect rect_janela = {0, 20, janela_w, janela_h};
+    //CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
+    DestruirMoldura(&menu->moldura);
     menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
     CalcularMolduraPartes(&menu->moldura, CantoFixo);
 
@@ -121,8 +123,16 @@ void DesenharCenaMenu(VariveisGerais geral, VariveisMenu menu){
     SDL_SetRenderDrawColor(geral.renderizador, menu.cor_fundo.r, menu.cor_fundo.g, menu.cor_fundo.b, menu.cor_fundo.a);
     SDL_RenderClear(geral.renderizador);
 
+    SDL_RenderTexture(geral.renderizador, menu.imagem, NULL,
+        &(SDL_FRect){
+            0,0,
+            geral.resolucao_atual[0],
+            geral.resolucao_atual[1]
+        }
+    );
+
     // botões
-    DesenharMoldura(geral.renderizador, menu.moldura);
+    //DesenharMoldura(geral.renderizador, menu.moldura);
     for (int i = 0; i < QuantBotao; i++)
         DesenharBotao(geral.renderizador, *botoes[i]);
 }
