@@ -131,8 +131,8 @@ typedef enum {
 		X(VMM_BLOCO_PEDRA_MUSGO1x1, 1, 11, VMMA_PEDRA_ON) \
 		\
 		\
-		X(VMM_BLOCO_PEDRA_LATERAL0x0, 2, 10, VMMA_SEM_COLI) \
-		X(VMM_BLOCO_PEDRA_LATERAL0x1, 3, 10, VMMA_SEM_COLI) \
+		X(VMM_BLOCO_PEDRA_LATERAL0x0, 2, 10, VMMA_PEDRA_ON) \
+		X(VMM_BLOCO_PEDRA_LATERAL0x1, 3, 10, VMMA_PEDRA_ON) \
 		\
 		X(VMM_BLOCO_PEDRA_LATERAL1x0, 2, 11, VMMA_PEDRA_ON) \
 		X(VMM_BLOCO_PEDRA_LATERAL1x1, 3, 11, VMMA_PEDRA_ON) \
@@ -172,6 +172,7 @@ typedef struct PlayerInJogo
 		bool coli_h;
 		bool coli_v;
 		float vida;
+		float dano_sofrido;
 		double frame;
 		double acelera;
 		double vel_max_x;
@@ -180,6 +181,7 @@ typedef struct PlayerInJogo
 		double velocidade_y;
 		double posicao_x;
 		double posicao_y;
+		Uint64 tempo_safe;
 		SDL_Rect retangulo_coli;
 		SDL_Rect retangulo_coli_h;
 		SDL_Rect retangulo_coli_v;
@@ -197,6 +199,7 @@ typedef struct Inimigo
 	bool coli_h;
 	bool coli_v;
 	float vida;
+	float dano;
 	double frame;
 	double acelera;
 	double vel_max_x;
@@ -257,11 +260,11 @@ void DesenharMapa(SDL_Renderer *renderizador, Mapa mapa, Camera camera, int tama
 void DesenharHud(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos);
 SDL_FRect MapaTiles(int n);
 
-PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img);
+PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img, float vida, int coracoes);
 void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_frame, Camera *camera, Mapa mapa, int tamanho_bloco[2], int tamanhos_tela[2]);
 void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera camera);
 
-Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_area, SDL_Rect retangulo_coli,  int index);
+Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_area, SDL_Rect retangulo_coli, float dano, int index);
 void CalcularInimigo(Inimigo *inimigo, double delta_frame, Camera *camera, Mapa mapa, int tamanho_bloco[2], int tamanhos_tela[2]);
 void DesenharInimigo(SDL_Renderer *renderizador, Inimigo inimigo, SDL_Texture *sprite_atlas, Camera camera );
 
@@ -272,6 +275,8 @@ void ColisaoPlayerMapaV(PlayerInJogo *jogador, Mapa Mapa, int tamanho_bloco[2], 
 
 void ColisaoInimigoMapaH(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera);
 void ColisaoInimigoMapaV(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera);
+
+void ColisaoPlayerInimigo(PlayerInJogo *jogador, Inimigo *Inimigo);
 
 
 //Criação de Mapa

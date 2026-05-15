@@ -5,25 +5,44 @@
 
 
 void DesenharHud(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos){
-	SDL_FRect barra = {CantoFixo,CantoFixo,tamanhos.barra_vida[1],tamanhos.barra_vida[1]};
+	SDL_FRect barra = {CantoFixo/3,CantoFixo/3,tamanhos.barra_vida[0],tamanhos.barra_vida[1]};
 	SDL_RenderTexture(
 		geral.renderizador, 
 		geral.textura_hud, 
 		&geral.barra_de_vida, 
 		&barra);
+
+	SDL_FRect vida  = geral.barra_de_vida;
+	vida.y = EscalaHud * 5;
+	SDL_RenderTexture(
+		geral.renderizador, 
+		geral.textura_hud, 
+		&vida, 
+		&barra);
+
+	vida.y = EscalaHud * 7;
+	vida.w *= (jogo.jogador.vida/100);
+	barra.w *= (jogo.jogador.vida/100);
+	SDL_RenderTexture(
+		geral.renderizador, 
+		geral.textura_hud, 
+		&vida, 
+		&barra);
 }
 
 
-PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img){
+PlayerInJogo InitPlayer(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_coli,  char *img, float vida, int coracoes){
 	PlayerInJogo player = {
-		.coracoes         = 3,
+		.coracoes         = coracoes,
 		.estado_atual     = 0,
 		.estado_passado   = 0,
 		.costas           = 0,
 		.coli_h           = 0,
 		.coli_v           = 0,
-		.vida             = 100.0,
+		.vida             = vida,
+		.dano_sofrido     = 0,
 		.frame            = 0,
+		.tempo_safe       = 0,
 		.acelera          = (float)retangulo_coli.w/100,
 		.vel_max_x        = (float)retangulo_coli.w/32,
 		.vel_max_y        = (float)retangulo_coli.h/32,
@@ -125,6 +144,33 @@ void CalcularPlayer(const bool *teclado, PlayerInJogo *player, double delta_fram
 			player->estado_atual = VMM_PLAYER_IDLE;
 		}
 	}
+	if(player->dano_sofrido){
+		if(player->dano_sofrido > 0){
+			printf("frame: %f\n", delta_frame);
+			printf("tempo: %d\n", player->tempo_safe);
+			
+			if( player->tempo_safe < delta_frame){
+				player->tempo_safe = 0;
+				if(player->dano_sofrido > delta_frame){
+					player->dano_sofrido -= delta_frame;
+					player->vida -= delta_frame;
+					player->tempo_safe -= delta_frame;
+				}
+				else{
+					player->vida-=player->dano_sofrido;
+					player->dano_sofrido = 0;
+				}
+			}
+			else{
+				player->tempo_safe -= delta_frame;
+				player->vida-=player->dano_sofrido;
+				player->dano_sofrido = 0;
+			}
+		}
+		else{
+			player->dano_sofrido=0;
+		}
+	}
 	
 
 	
@@ -181,7 +227,7 @@ void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo player, Camera came
 	#undef X
 }
 
-Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_area, SDL_Rect retangulo_coli,  int index){
+Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rect retangulo_area, SDL_Rect retangulo_coli, float dano, int index){
 	Inimigo inimigo = {
 		.index			  = index,
 		.estado_atual     = 0,
@@ -190,6 +236,7 @@ Inimigo InitInimigo(SDL_Renderer *renderizador, SDL_FRect retangulo_img, SDL_Rec
 		.coli_h           = 0,
 		.coli_v           = 0,
 		.vida             = 100.0,
+		.dano             = dano,
 		.frame            = 0,
 		.acelera          = (float)retangulo_coli.w/100,
 		.vel_max_x        = (float)retangulo_coli.w/48,
@@ -324,6 +371,21 @@ void DesenharInimigo(SDL_Renderer *renderizador, Inimigo inimigo, SDL_Texture *s
 	#undef X
 }
 
+void ColisaoPlayerInimigo(PlayerInJogo *jogador, Inimigo *inimigo){
+	if(SDL_HasRectIntersection(&jogador->retangulo_coli, &inimigo->retangulo_coli)) {
+		if(!jogador->tempo_safe){
+			jogador->tempo_safe = 300000;
+			jogador->dano_sofrido = inimigo->dano;
+		}
+	}
+
+
+
+
+
+}
+
+
 
 void DesenharBloco(SDL_Renderer *renderizador, Bloco bloco){
 	SDL_RenderTexture(renderizador, bloco.textura, &bloco.loc, &bloco.retangulo);
@@ -367,8 +429,10 @@ void ColisaoPlayerMapaH(PlayerInJogo *jogador, Mapa mapa, int tamanho_bloco[2], 
 }
 
 void ColisaoInimigoMapaV(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera){
-	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y && i < TamanhosMapaY; i++){
-		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x && j < TamanhosMapaX; j++){
+	camera.x -= tamanho_tela[0]/2;
+	camera.y -= tamanho_tela[1]/2;
+	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1]*2 + camera.y && i < TamanhosMapaY; i++){
+		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0]*2 + camera.x && j < TamanhosMapaX; j++){
 			if(mapa.tiles[i][j]){ 
 				TiposVMMA tipo_de_coli = CalcularTipoVMMA(mapa.tiles[i][j]);
 				switch (tipo_de_coli){
@@ -385,8 +449,10 @@ void ColisaoInimigoMapaV(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int 
 }
 
 void ColisaoInimigoMapaH(Inimigo *inimigo, Mapa mapa, int tamanho_bloco[2], int tamanho_tela[2],Camera camera){
-	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1] + camera.y && i < TamanhosMapaY; i++){
-		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0] + camera.x && j < TamanhosMapaX; j++){
+	camera.x -= tamanho_tela[0]/2;
+	camera.y -= tamanho_tela[1]/2;
+	for(int i = camera.y/tamanho_bloco[1]; i*tamanho_bloco[1] < tamanho_tela[1]*2 + camera.y && i < TamanhosMapaY; i++){
+		for(int j = camera.x/tamanho_bloco[0]; j*tamanho_bloco[0] < tamanho_tela[0]*2 + camera.x && j < TamanhosMapaX; j++){
 			if(mapa.tiles[i][j]){ 
 				TiposVMMA tipo_de_coli = CalcularTipoVMMA(mapa.tiles[i][j]);
 				switch (tipo_de_coli){

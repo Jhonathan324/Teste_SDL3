@@ -18,7 +18,9 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
         geral->renderizador, 
         (SDL_FRect){0,0,tamanhos.jogador[0],tamanhos.jogador[1]},
         (SDL_Rect){tamanhos.bloco1[0],62*tamanhos.bloco1[1],tamanhos.jogador_coli[0],tamanhos.jogador_coli[1]},
-        "assets/imagens/entities/player/Guerreiro.png"
+        "assets/imagens/entities/player/Guerreiro.png",
+        geral->jogador.vida,
+        geral->jogador.coracoes
     );
 
     // Inimigos
@@ -27,6 +29,7 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
         (SDL_FRect){tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0],tamanhos.inimigo1[1]},
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0]*5,tamanhos.inimigo1[1]},
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0],tamanhos.inimigo1[1]},
+        10,
         PORCO_NORMAL
     );
     jogo->sprite_atlas_inimigos[0] = IMG_LoadTexture(geral->renderizador, "assets/imagens/entities/mobs/porco marron.png");
@@ -106,8 +109,10 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t){
     //inimigos
     SDL_Rect camera = {jogo->camera.x- geral->resolucao_atual[0]/2, jogo->camera.y - geral->resolucao_atual[1]/2, geral->resolucao_atual[0]*2, geral->resolucao_atual[1]*2};
     for(int i = 0; i<1; i++){
-        if(SDL_HasRectIntersection(&camera, &jogo->inimigos[i].retangulo_coli))
+        if(SDL_HasRectIntersection(&camera, &jogo->inimigos[i].retangulo_coli)){
         CalcularInimigo(&jogo->inimigos[i], delta_t*100, &jogo->camera, jogo->mapa, jogo->tamanho_bloco, geral->resolucao_atual);
+        ColisaoPlayerInimigo(&jogo->jogador, &jogo->inimigos[i]);
+    }
     }
 }
 

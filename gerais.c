@@ -17,18 +17,21 @@ void GetTamanhos(Tamanhos *tamanhos)
         tamanhos->tela[1] = 360;
     }
     
-    tamanhos->menu[0]         = tamanhos->tela[0] * (float)CantoFixo / 640 * 6;
-    tamanhos->menu[1]         = tamanhos->tela[1] * (float)CantoFixo / 360 * 6;
-
+    tamanhos->menu[0]         = tamanhos->tela[0] * (float)CantoFixo          / 640 * 6;
+    tamanhos->menu[1]         = tamanhos->tela[1] * (float)CantoFixo          / 360 * 6;
+    
     tamanhos->bloco1[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
     tamanhos->bloco1[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
-
+    
     tamanhos->botao1[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
     tamanhos->botao1[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
-
+    
     tamanhos->botao2[0]       = tamanhos->tela[0] * (float)MedidaImgBloco     / 640 * 2;
     tamanhos->botao2[1]       = tamanhos->tela[1] * (float)MedidaImgBloco     / 360 * 2;
     
+    tamanhos->barra_vida[0]   = tamanhos->tela[0] * (float)(EscalaHud*4)      / 640 * 2;
+    tamanhos->barra_vida[1]   = tamanhos->tela[1] * (float)(EscalaHud*1)      / 360 * 2;
+
     tamanhos->jogador[0]      = tamanhos->tela[0] * (float)MedidaImgPlayerX   / 640 * 2;
     tamanhos->jogador[1]      = tamanhos->tela[1] * (float)MedidaImgPlayerY   / 360 * 2;
 
@@ -41,9 +44,9 @@ void GetTamanhos(Tamanhos *tamanhos)
     tamanhos->jogador_coli[0] = tamanhos->tela[0] * (float)MedidaImgPlayerColiX / 640 * 2;
     tamanhos->jogador_coli[1] = tamanhos->tela[1] * (float)MedidaImgPlayerColiY / 360 * 2;
 
-    tamanhos->jogador_coli[0] = tamanhos->tela[0] * (float)(EscalaHud*4) / 640 * 2;
-    tamanhos->jogador_coli[1] = tamanhos->tela[1] * (float)(EscalaHud*1) / 360 * 2;
 }
+
+
 
 void AtribuirFRectInRectA(SDL_FRect *fretangulo, SDL_Rect *retangulo)
 {

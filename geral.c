@@ -12,10 +12,6 @@ void InitCenaGeral(VariveisGerais *geral, Tamanhos *tamanhos){
         0
     ); // (640,360) resolução base. não pode ser menor;
     
-    geral->jogador = (Player){
-        100, 
-        3, 
-    };
     
     geral->fullscrean         = false;
     geral->rodando            = true;
@@ -32,7 +28,9 @@ void InitCenaGeral(VariveisGerais *geral, Tamanhos *tamanhos){
     geral->botao_mouse_meio = false;
     geral->botao_mouse_gira = false;
     geral->textura_hud = IMG_LoadTexture(geral->renderizador, "assets/imagens/ui/panels/hud geral.png");
-    geral->barra_de_vida = (SDL_FRect){EscalaHud*19, EscalaHud*0, EscalaHud*4, EscalaHud*1};
+    geral->barra_de_vida = (SDL_FRect){EscalaHud*19, EscalaHud*1, EscalaHud*4, EscalaHud*1};
+
+    SDL_SetTextureScaleMode(geral->textura_hud, SDL_SCALEMODE_NEAREST);
 }
 
 void CalcularGeral(VariveisGerais *geral, Tamanhos *tamanhos){
