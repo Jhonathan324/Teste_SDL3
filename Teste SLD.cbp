@@ -30,11 +30,17 @@
 		</Build>
 		<Compiler>
 			<Add option="-Wall" />
+			<Add directory="SDL3/include" />
+			<Add directory="SDL3_tff/include" />
+			<Add directory="SDL3_image/include" />
 		</Compiler>
 		<Linker>
 			<Add library="SDL3" />
 			<Add library="SDL3_image" />
 			<Add library="SDL3_ttf" />
+			<Add directory="SDL3/lib" />
+			<Add directory="SDL3_ttf/lib" />
+			<Add directory="SDL3_image/lib" />
 		</Linker>
 		<Unit filename="conf.c">
 			<Option compilerVar="CC" />
