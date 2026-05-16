@@ -96,6 +96,10 @@ int main(void)
             geral.resolucao_antiga[0] = geral.resolucao_atual[0];
             geral.resolucao_antiga[1] = geral.resolucao_atual[1];
         }
+        if (geral.carregar_mapa){
+            CalcularCenaJogo(&geral, &jogo, tamanhos);
+            geral.carregar_mapa = false;
+        }
 
         // Limpar a Tela
         SDL_RenderPresent(geral.renderizador);

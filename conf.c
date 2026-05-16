@@ -25,7 +25,6 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos)
 
     DestruirMoldura(&conf->moldura);
     conf->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&conf->moldura, CantoFixo);
 
     //Textos
     DestruirTexto(&conf->texto_reso);
@@ -74,7 +73,6 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos)
         CENA_MENU, fonte,
         (SDL_Color)PRETO);
     conf->botao_sair.retangulo.x -= conf->botao_sair.retangulo.w;
-    CalcularBotaoPartes(&conf->botao_sair);
 
     conf->troca_fullscreen = InitMarcador(geral->renderizador ,&(SDL_FRect){
         conf->texto_full.retangulo.x+CantoFixo*((float)2/3),
@@ -113,7 +111,6 @@ void InitCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos tamanhos)
         CENA_CONF, fonte,
         (SDL_Color)PRETO,
         7);
-    CalcularBotaoExpansivoPartes(&conf->botao_reso);
 }
 
 void LoopCenaConf(VariveisGerais *geral, VariveisConf *conf, Tamanhos *tamanhos)

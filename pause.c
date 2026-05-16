@@ -25,7 +25,6 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, Tamanhos tamanho
         "assets/imagens/ui/panels/moldura de madeira.png"
     );
     
-    CalcularMolduraPartes(&pause->moldura, CantoFixo);
 
     // Criação do pause
     // Criação dos botões
@@ -88,11 +87,6 @@ void InitCenaPause(VariveisGerais *geral, VariveisPause *pause, Tamanhos tamanho
         &pause->botao_sair.retangulo
     };
     CentralizarRectsInRectV(&pause->moldura.retangulo, retangulos, 3, 0.1, 0.2);
-
-    //Calculo das partes dos botões para as imagens
-    CalcularBotaoPartes(&pause->botao_iniciar);
-    CalcularBotaoPartes(&pause->botao_conf);
-    CalcularBotaoPartes(&pause->botao_sair);
 }
 
 void LoopCenaPause(VariveisGerais *geral, VariveisPause *pause){

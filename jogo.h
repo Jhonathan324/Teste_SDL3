@@ -85,6 +85,7 @@ typedef struct Mapa{
 	int n;
 	uint16_t tiles[TamanhosMapaY][TamanhosMapaX];
 	SDL_Texture *textura;
+	SDL_Rect area_vitoria;
 } Mapa;
 
 typedef struct Camera {

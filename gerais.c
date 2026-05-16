@@ -162,40 +162,23 @@ Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file
     return moldura;
 }
 
-void CalcularMolduraPartes(Moldura *moldura, float tamanho_canto)
-{
-    if (moldura->retangulo.w < tamanho_canto * 2)
-    {
-        moldura->retangulo.w = tamanho_canto * 2;
-    }
-    if (moldura->retangulo.h < tamanho_canto * 2)
-    {
-        moldura->retangulo.h = tamanho_canto * 2;
-    }
-    int x = moldura->retangulo.x;
-    int y = moldura->retangulo.y;
-    int w = moldura->retangulo.w;
-    int h = moldura->retangulo.h;
-    moldura->partes[0][0] = (SDL_FRect){x                     , y                                , tamanho_canto        , tamanho_canto};
-    moldura->partes[0][1] = (SDL_FRect){x + tamanho_canto     , y                                , w - 2 * tamanho_canto, tamanho_canto};
-    moldura->partes[0][2] = (SDL_FRect){x + w - tamanho_canto , y                                , tamanho_canto        , tamanho_canto};
-    moldura->partes[1][0] = (SDL_FRect){x                     , y + tamanho_canto                , tamanho_canto        , h - 2 * tamanho_canto};
-    moldura->partes[1][1] = (SDL_FRect){x + tamanho_canto     , y + tamanho_canto                , w - 2 * tamanho_canto, h - 2 * tamanho_canto};
-    moldura->partes[1][2] = (SDL_FRect){x + w - tamanho_canto , y + tamanho_canto                , tamanho_canto        , h - 2 * tamanho_canto};
-    moldura->partes[2][0] = (SDL_FRect){x                     , y + h - tamanho_canto            , tamanho_canto        , tamanho_canto};
-    moldura->partes[2][1] = (SDL_FRect){x + tamanho_canto     , y + h - tamanho_canto            , w - 2 * tamanho_canto, tamanho_canto};
-    moldura->partes[2][2] = (SDL_FRect){x + w - tamanho_canto , y + h - tamanho_canto            , tamanho_canto        , tamanho_canto};
-}
+
 
 void DesenharMoldura(SDL_Renderer *renderizador, Moldura moldura)
 {
-    for (int i = 0; i < 3; i++)
-        for (int j = 0; j < 3; j++)
-            SDL_RenderTexture(
-                renderizador,
-                moldura.textura,
-                &(SDL_FRect){EscalaMoldura * j, EscalaMoldura * i, EscalaMoldura, EscalaMoldura},
-                &moldura.partes[i][j]);
+    SDL_RenderTexture9GridTiled(
+        renderizador,
+        moldura.textura,
+        NULL,
+        EscalaMoldura,
+        EscalaMoldura,
+        EscalaMoldura,
+        EscalaMoldura,
+        2.0f,
+        &moldura.retangulo,
+        2.0f
+    );
+    
 }
 
 void DestruirMoldura(Moldura *moldura){
@@ -310,28 +293,6 @@ Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, 
     return botao;
 }
 
-void CalcularBotaoPartes(Botao *botao)
-{
-    float tamanho_canto;
-    float x = botao->retangulo.x;
-    float y = botao->retangulo.y;
-    float w = botao->retangulo.w;
-    float h = botao->retangulo.h;
-
-    if (h >= w)
-        tamanho_canto = w / 2;
-    else
-        tamanho_canto = h / 2;
-    botao->partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
-    botao->partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
-    botao->partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
-    botao->partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    botao->partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
-    botao->partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    botao->partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-    botao->partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
-    botao->partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-}
 
 void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
 {
@@ -350,13 +311,18 @@ void DesenharBotao(SDL_Renderer *renderizador, Botao botao)
     else
     {
         
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++)
-                SDL_RenderTexture(
-                    renderizador,
-                    botao.imagem,
-                    &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
-                    &botao.partes[i][j]);
+        SDL_RenderTexture9GridTiled(
+            renderizador,
+            botao.imagem,
+            NULL,
+            EscalaBotao,
+            EscalaBotao,
+            EscalaBotao,
+            EscalaBotao,
+            3.0f,
+            &botao.retangulo,
+            3.0f
+        );
         
 
         if(botao.sobre){
@@ -478,51 +444,6 @@ BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangu
     return botao_e;
 }
 
-void CalcularBotaoExpansivoPartes(BotaoExpansivo *botao)
-{
-    float tamanho_canto;
-    float x = botao->botao_pai.retangulo.x;
-    float y = botao->botao_pai.retangulo.y;
-    float w = botao->botao_pai.retangulo.w;
-    float h = botao->botao_pai.retangulo.h;
-
-    if (h >= w)
-        tamanho_canto = w / 2;
-    else
-        tamanho_canto = h / 2;
-    botao->botao_pai.partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
-    botao->botao_pai.partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
-    botao->botao_pai.partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
-    botao->botao_pai.partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    botao->botao_pai.partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
-    botao->botao_pai.partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-    botao->botao_pai.partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-    botao->botao_pai.partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
-    botao->botao_pai.partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-    for (int i = 0; i < botao->n; i++)
-    {
-        x = botao->botao_filho[i].retangulo.x;
-        y = botao->botao_filho[i].retangulo.y;
-        w = botao->botao_filho[i].retangulo.w;
-        h = botao->botao_filho[i].retangulo.h;
-
-        if (h >= w)
-            tamanho_canto = w / 2;
-        else
-            tamanho_canto = h / 2;
-        botao->botao_filho[i].partes[0][0] = (SDL_FRect){x, y, tamanho_canto, tamanho_canto};
-        botao->botao_filho[i].partes[0][1] = (SDL_FRect){x + tamanho_canto, y, w - 2 * tamanho_canto, tamanho_canto};
-        botao->botao_filho[i].partes[0][2] = (SDL_FRect){x + w - tamanho_canto, y, tamanho_canto, tamanho_canto};
-        botao->botao_filho[i].partes[1][0] = (SDL_FRect){x, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-        botao->botao_filho[i].partes[1][1] = (SDL_FRect){x + tamanho_canto, y + tamanho_canto, w - 2 * tamanho_canto, h - 2 * tamanho_canto};
-        botao->botao_filho[i].partes[1][2] = (SDL_FRect){x + w - tamanho_canto, y + tamanho_canto, tamanho_canto, h - 2 * tamanho_canto};
-        botao->botao_filho[i].partes[2][0] = (SDL_FRect){x, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-        botao->botao_filho[i].partes[2][1] = (SDL_FRect){x + tamanho_canto, y + h - tamanho_canto, w - 2 * tamanho_canto, tamanho_canto};
-        botao->botao_filho[i].partes[2][2] = (SDL_FRect){x + w - tamanho_canto, y + h - tamanho_canto, tamanho_canto, tamanho_canto};
-        // printf("%s ",botao->botao_filho[i].texto);
-        // printf("%f \n",botao->botao_filho[i].retangulo.y);
-    }
-}
 
 void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
 {
@@ -532,20 +453,19 @@ void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
     }
     else
     {
-        if (botao.botao_pai.partes)
-            for (int i = 0; i < 3; i++)
-                for (int j = 0; j < 3; j++)
-                    SDL_RenderTexture(
-                        renderizador,
-                        botao.botao_pai.imagem,
-                        &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
-                        &botao.botao_pai.partes[i][j]);
-        else
-            SDL_RenderTexture(
+            {
+                SDL_RenderTexture9GridTiled(
                 renderizador,
                 botao.botao_pai.imagem,
                 NULL,
-                &botao.botao_pai.retangulo);
+                EscalaBotao,
+                EscalaBotao,
+                EscalaBotao,
+                EscalaBotao,
+                3.0f,
+                &botao.botao_pai.retangulo,
+                3.0f
+            );
     }
     if(botao.expandido){
         SDL_SetRenderDrawBlendMode(
@@ -581,24 +501,19 @@ void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
             SDL_RenderFillRect(renderizador, &botao.botao_filho[i1].retangulo);
         }
         else
-        {
-            if (botao.botao_filho[i1].partes)
-                for (int i = 0; i < 3; i++)
-                    for (int j = 0; j < 3; j++)
-                    {
-                        SDL_RenderTexture(
-                            renderizador,
-                            botao.botao_filho[i1].imagem,
-                            &(SDL_FRect){EscalaBotao * j, EscalaBotao * i, EscalaBotao, EscalaBotao},
-                            &botao.botao_filho[i1].partes[i][j]);
-                    }
-            else
-                SDL_RenderTexture(
-                    renderizador,
-                    botao.botao_filho[i1].imagem,
-                    NULL,
-                    &botao.botao_filho[i1].retangulo);
-
+            {
+                SDL_RenderTexture9GridTiled(
+                renderizador,
+                botao.botao_filho[i1].imagem,
+                NULL,
+                EscalaBotao,
+                EscalaBotao,
+                EscalaBotao,
+                EscalaBotao,
+                3.0f,
+                &botao.botao_filho[i1].retangulo,
+                3.0f
+            );
             if(botao.botao_filho[i1].sobre ){
             SDL_SetRenderDrawBlendMode(
                 renderizador,
@@ -619,7 +534,7 @@ void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao)
             SDL_RenderTexture(renderizador, botao.botao_filho[i1].textura, NULL, &retangulo_texto);
         }
     }
-}
+}}
 
 void DestruirBotaoExpansivo(BotaoExpansivo *botao){
     DestruirBotao(&botao->botao_pai);

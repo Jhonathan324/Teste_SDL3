@@ -98,7 +98,6 @@ void InitCenaMapa(SDL_Renderer *renderizador, VariaveisMapa *mapa, Tamanhos tama
 	};
 	DestruirMoldura(&mapa->moldura_bloco);
 	mapa->moldura_bloco = InitMoldura(renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
-	CalcularMolduraPartes(&mapa->moldura_bloco, CantoFixo);
 	DestruirBotao(&mapa->botao_salvar);
 	mapa->botao_salvar =
 	InitBotao(renderizador,
@@ -114,7 +113,6 @@ void InitCenaMapa(SDL_Renderer *renderizador, VariaveisMapa *mapa, Tamanhos tama
 				CENA_MENU, fonte,
 				(SDL_Color)PRETO);
 		mapa->botao_salvar.retangulo.x -= mapa->botao_salvar.retangulo.w;
-		CalcularBotaoPartes(&mapa->botao_salvar);
 
 	DestruirBotao(&mapa->botao_carregar);
 	mapa->botao_carregar =
@@ -131,7 +129,7 @@ void InitCenaMapa(SDL_Renderer *renderizador, VariaveisMapa *mapa, Tamanhos tama
 				CENA_MENU, fonte,
 				(SDL_Color)PRETO);
 		mapa->botao_carregar.retangulo.x -= mapa->botao_carregar.retangulo.w*2;
-		CalcularBotaoPartes(&mapa->botao_carregar);
+
 
 
 	mapa->marcador_preencher = InitMarcador(

@@ -336,13 +336,13 @@ void DesenharPlayer(SDL_Renderer *renderizador, PlayerInJogo jogador, Camera cam
 		jogador.retangulo_coli.y-camera.y,
 		jogador.retangulo_coli.w,
 		jogador.retangulo_coli.h});
-		*/
-	SDL_SetRenderDrawColor(renderizador, 0, 255, 0, 255);
-	SDL_RenderFillRect(renderizador, &(SDL_FRect){
-		jogador.retangulo_dano.x-camera.x,
-		jogador.retangulo_dano.y-camera.y,
-		jogador.retangulo_dano.w,
-		jogador.retangulo_dano.h});
+		SDL_SetRenderDrawColor(renderizador, 0, 255, 0, 255);
+		SDL_RenderFillRect(renderizador, &(SDL_FRect){
+			jogador.retangulo_dano.x-camera.x,
+			jogador.retangulo_dano.y-camera.y,
+			jogador.retangulo_dano.w,
+			jogador.retangulo_dano.h});
+			*/
 
 	Uint64 frame_atual = jogador.frame / 10; 
 	

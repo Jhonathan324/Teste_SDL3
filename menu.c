@@ -24,7 +24,6 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, Tamanhos tamanhos)
     //CentralizarRectInRect(&rect_janela, &rect_moldura); // centralização do menu com base na tela
     DestruirMoldura(&menu->moldura);
     menu->moldura = InitMoldura(geral->renderizador, &rect_moldura, "assets/imagens/ui/panels/moldura de madeira.png");
-    CalcularMolduraPartes(&menu->moldura, CantoFixo);
 
     // Criação dos botões
     DestruirBotao(&menu->botao_conf);
@@ -83,10 +82,7 @@ void InitCenaMenu(VariveisGerais *geral, VariveisMenu *menu, Tamanhos tamanhos)
     CentralizarRectsInRectV(&menu->moldura.retangulo, retangulos, QuantBotao, 0.1, 0.2);
 
     // Calculo das partes dos botões para as imagens
-    CalcularBotaoPartes(&menu->botao_iniciar);
-    CalcularBotaoPartes(&menu->botao_conf);
-    CalcularBotaoPartes(&menu->botao_criacao);
-    CalcularBotaoPartes(&menu->botao_sair);
+
 }
 
 void LoopCenaMenu(VariveisGerais *geral, VariveisMenu *menu)

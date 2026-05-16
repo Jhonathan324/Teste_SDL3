@@ -30,7 +30,7 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0]*5,tamanhos.inimigo1[1]},
         (SDL_Rect) {tamanhos.bloco1[0]*4,65*tamanhos.bloco1[1] - tamanhos.inimigo1[1],tamanhos.inimigo1[0],tamanhos.inimigo1[1]},
         50,
-        100,
+        10,
         PORCO_NORMAL
     );
     
@@ -50,6 +50,12 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
     jogo->mapa.textura = IMG_LoadTexture(geral->renderizador, "assets/imagens/world/tiles/Tiles.png");
     if (jogo->mapa.textura) SDL_SetTextureScaleMode(jogo->mapa.textura, SDL_SCALEMODE_NEAREST);
     CarregarMapa(&jogo->mapa, jogo->mapa.n);
+    jogo->mapa.area_vitoria = (SDL_Rect){
+        20*tamanhos.bloco1[0],
+        55*tamanhos.bloco1[1],
+        10*tamanhos.bloco1[0],
+        10*tamanhos.bloco1[0]
+    };
     /* Debug
     for(int i = 0; i<TamanhosMapaX; i++){
         //if(rand()%2) jogo->mapa.tiles[7][i] = 0;
@@ -71,6 +77,7 @@ void InitCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
 
 void CalcularCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, Tamanhos tamanhos){
     // Player
+    CarregarMapa(&jogo->mapa, jogo->mapa.n);
     double x = tamanhos.tela[0] * ( (double)jogo->jogador.retangulo_coli.x/geral->resolucao_antiga[0]);
     double y = tamanhos.tela[1] * ( (double)jogo->jogador.retangulo_coli.y/geral->resolucao_antiga[1]);
     SDL_FRect retangulo_img = {x,y,tamanhos.jogador[0],tamanhos.jogador[1]};
@@ -111,6 +118,10 @@ void LoopCenaJogo(VariveisGerais *geral, VariveisJogo *jogo, double delta_t){
         jogo->jogador.vida = 100;
     }
 
+    if(SDL_HasRectIntersection(&jogo->jogador.retangulo_coli, &jogo->mapa.area_vitoria)){
+        printf("jogador vence\n");
+    }
+
 
     // Logica da camera 
     if(-jogo->camera.x+jogo->jogador.retangulo_coli.x + jogo->jogador.retangulo_coli.w > geral->resolucao_atual[0]*0.6) jogo->camera.x = jogo->jogador.retangulo_coli.x  + jogo->jogador.retangulo_coli.w - geral->resolucao_atual[0]*0.6;
@@ -146,9 +157,14 @@ void DesenharCenaJogo(VariveisGerais geral, VariveisJogo jogo, Tamanhos tamanhos
     DesenharPlayer(geral.renderizador, jogo.jogador, jogo.camera);
     DesenharHud(geral, jogo, tamanhos);
 
-    SDL_SetRenderDrawColor(geral.renderizador, 0, 0, 0, 255);
+    
+    SDL_SetRenderDrawColor(geral.renderizador, 0, 155, 0, 122);
     SDL_RenderFillRect(geral.renderizador, &(SDL_FRect){
-
+        jogo.mapa.area_vitoria.x-jogo.camera.x,
+        jogo.mapa.area_vitoria.y-jogo.camera.y,
+        jogo.mapa.area_vitoria.w,
+        jogo.mapa.area_vitoria.h,
+        
     });
 }
 

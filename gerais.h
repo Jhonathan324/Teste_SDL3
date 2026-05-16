@@ -37,6 +37,8 @@ typedef enum {
     CENA_PAUSE,
     CENA_CRIACAO,
     CENA_CONF,
+    CENA_VITORIA, 
+    CENA_DERROTA, 
     CENA_CREDITOS, // algum dia eu vou usar
     CENA_SAIR,
 }ESTADO_JOGO;
@@ -56,7 +58,6 @@ typedef struct Moldura
 {
     SDL_FRect retangulo;
     SDL_Texture *textura;
-    SDL_FRect partes[3][3];
 } Moldura;
 
 typedef struct Marcador{
@@ -67,7 +68,6 @@ typedef struct Marcador{
     SDL_Color cor1;
     SDL_Color cor2;
     SDL_Texture *imagem1;
-    SDL_FRect partes[3][3];
 } Marcador;
 
 typedef struct Botao
@@ -82,7 +82,6 @@ typedef struct Botao
     SDL_Color cor2;
     SDL_Texture *textura;
     SDL_Texture *imagem;
-    SDL_FRect partes[3][3];
 } Botao;
 
 typedef struct BotaoExpansivo
@@ -130,6 +129,7 @@ typedef struct VariveisGerais
     bool rodando;
     bool fullscrean;
     bool troca_reso;
+    bool carregar_mapa;
     int botao_mouse_direito;
     int botao_mouse_esquerdo;
     int botao_mouse_meio;
@@ -197,7 +197,6 @@ void DesenharTexto(SDL_Renderer *renderizador, CampoTexto texto);
 void DestruirTexto(CampoTexto *texto);
 
 Moldura InitMoldura(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *file);
-void CalcularMolduraPartes(Moldura *moldura, float tamanhos_canto);
 void DesenharMoldura(SDL_Renderer *renderizador, Moldura moldura);
 void DestruirMoldura(Moldura *moldura);
 
@@ -207,13 +206,11 @@ bool VerificarMarcador(Marcador *marcador, SDL_Point mouse, bool click);
 void DestruirMarcador(Marcador *marcador);
 
 Botao InitBotao(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, SDL_Color cor1, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte);
-void CalcularBotaoPartes(Botao *botao);
 void DesenharBotao(SDL_Renderer *renderizador, Botao botao);
 bool VerificarBotao(Botao *botao, SDL_Point mouse, bool click);
 void DestruirBotao(Botao *botao);
 
 BotaoExpansivo InitBotaoExpansivo(SDL_Renderer *renderizador, SDL_FRect *retangulo, char *imagem, char *texto, char *textos[], SDL_Color cor, SDL_Color cor2, int indice, TTF_Font *fonte, SDL_Color cor_fonte, int n);
-void CalcularBotaoExpansivoPartes(BotaoExpansivo *botao);
 void DesenharBotaoExpansivo(SDL_Renderer *renderizador, BotaoExpansivo botao);
 void DestruirBotaoExpansivo(BotaoExpansivo *botao);
 
