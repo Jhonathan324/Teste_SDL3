@@ -1,0 +1,51 @@
+# Build WebAssembly usando Emscripten
+# Uso: make -f Makefile.wasm
+# Saída: bin/web/index.html
+
+EMSDK        := /opt/emsdk
+EMCC         := bash -c "source $(EMSDK)/emsdk_env.sh 2>/dev/null && emcc"
+
+OUTDIR       := bin/web
+TARGET       := $(OUTDIR)/index.html
+
+# Fontes — exclui main.c nativo, usa main_web.c
+SRCS := $(filter-out main.c, $(wildcard *.c))
+
+SYSROOT_INC  := /opt/emsdk/upstream/emscripten/cache/sysroot/include
+SYSROOT_LIB  := /opt/emsdk/upstream/emscripten/cache/sysroot/lib/wasm32-emscripten
+
+# Flags de compilação
+CFLAGS := \
+	-O2 \
+	-Wall \
+	-Wno-unused-variable \
+	-sUSE_SDL=3 \
+	-sUSE_SDL_TTF=3 \
+	-I$(SYSROOT_INC)
+
+# Flags de link
+LDFLAGS := \
+	-sUSE_SDL=3 \
+	-sUSE_SDL_TTF=3 \
+	-sALLOW_MEMORY_GROWTH=1 \
+	-sINITIAL_MEMORY=67108864 \
+	-sSTACK_SIZE=1048576 \
+	-L$(SYSROOT_LIB) \
+	-lSDL3_image \
+	--preload-file assets \
+	--preload-file map \
+	--shell-file shell.html
+
+.PHONY: all clean
+
+all: $(OUTDIR) $(TARGET)
+
+$(OUTDIR):
+	mkdir -p $(OUTDIR)
+
+$(TARGET): $(SRCS) shell.html
+	$(EMCC) $(CFLAGS) $(SRCS) $(LDFLAGS) -o $(TARGET)
+	@echo "Build WebAssembly concluído: $(TARGET)"
+
+clean:
+	rm -rf $(OUTDIR)

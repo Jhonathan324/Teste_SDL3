@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quase um Jogo</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #111;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: monospace;
+      color: #ccc;
+    }
+    #canvas-container {
+      position: relative;
+    }
+    canvas {
+      display: block;
+      image-rendering: pixelated;
+    }
+    #status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+    #progress-bar-container {
+      width: 400px;
+      height: 6px;
+      background: #333;
+      border-radius: 3px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    #progress-bar {
+      height: 100%;
+      background: #4af;
+      width: 0%;
+      transition: width 0.2s;
+    }
+  </style>
+</head>
+<body>
+  <div id="canvas-container">
+    <canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+  </div>
+  <div id="progress-bar-container">
+    <div id="progress-bar"></div>
+  </div>
+  <div id="status">Carregando...</div>
+
+  <script>
+    var Module = {
+      canvas: (function() { return document.getElementById('canvas'); })(),
+      setStatus: function(text) {
+        var el = document.getElementById('status');
+        if (el) el.textContent = text || 'Pronto';
+      },
+      monitorRunDependencies: function(left) {
+        var bar = document.getElementById('progress-bar');
+        if (!bar) return;
+        if (left === 0) {
+          bar.style.width = '100%';
+          setTimeout(function() {
+            var c = document.getElementById('progress-bar-container');
+            if (c) c.style.display = 'none';
+          }, 500);
+        }
+      },
+      onRuntimeInitialized: function() {
+        document.getElementById('status').textContent = '';
+      }
+    };
+  </script>
+  {{{ SCRIPT }}}
+</body>
+</html>
