@@ -1,13 +1,23 @@
 FROM mcr.microsoft.com/devcontainers/base:2.0.4-noble
 
-# Dependências de build
+# Dependências de build (nativo + WebAssembly)
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -y --no-install-recommends \
         cmake \
+        gcc \
         git \
         python3 \
         xz-utils \
+        libx11-dev libxext-dev libxrandr-dev libxinerama-dev \
+        libxcursor-dev libxi-dev libxfixes-dev libxss-dev libxtst-dev \
+        libwayland-dev libxkbcommon-dev \
+        libasound2-dev libpulse-dev libgl-dev \
+        libfreetype-dev libharfbuzz-dev libpng-dev \
     && rm -rf /var/lib/apt/lists/*
+
+# Compila e instala SDL3, SDL3_ttf e SDL3_image nativos (Linux)
+COPY build-sdl3-native.sh /tmp/build-sdl3-native.sh
+RUN bash /tmp/build-sdl3-native.sh && rm /tmp/build-sdl3-native.sh
 
 # Emscripten via emsdk (versão latest)
 RUN git clone https://github.com/emscripten-core/emsdk.git /opt/emsdk \
